@@ -8,6 +8,7 @@
 import Cocoa
 
 class CompactTabsToolbarView: NSView {
+
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
 
@@ -17,7 +18,7 @@ class CompactTabsToolbarView: NSView {
     }
 
     func addItems() {
-        let textField = NSTextField()
+        let textField = NSTextField(frame: frame)
         textField.stringValue = "Hello I am text field"
         addSubview(textField)
     }

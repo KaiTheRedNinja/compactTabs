@@ -12,9 +12,8 @@
 		932B191928B726930034093E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 932B191828B726930034093E /* Assets.xcassets */; };
 		932B191C28B726930034093E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 932B191A28B726930034093E /* Main.storyboard */; };
 		932B192428B729370034093E /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192328B729370034093E /* MainWindowController.swift */; };
-		932B192628B72ADB0034093E /* NSToolbarItemExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192528B72ADB0034093E /* NSToolbarItemExtensions.swift */; };
-		932B192928B72D940034093E /* MainWindowController+NSToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192828B72D940034093E /* MainWindowController+NSToolbarDelegate.swift */; };
 		932B192B28B72F830034093E /* CompactTabsToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192A28B72F830034093E /* CompactTabsToolbarView.swift */; };
+		936EDC3F28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936EDC3E28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,9 +24,8 @@
 		932B191B28B726930034093E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		932B191D28B726930034093E /* compactTabs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = compactTabs.entitlements; sourceTree = "<group>"; };
 		932B192328B729370034093E /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
-		932B192528B72ADB0034093E /* NSToolbarItemExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSToolbarItemExtensions.swift; sourceTree = "<group>"; };
-		932B192828B72D940034093E /* MainWindowController+NSToolbarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainWindowController+NSToolbarDelegate.swift"; sourceTree = "<group>"; };
 		932B192A28B72F830034093E /* CompactTabsToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactTabsToolbarView.swift; sourceTree = "<group>"; };
+		936EDC3E28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainWindowController+NSToolbarDelegate.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,9 +62,8 @@
 				932B191628B726920034093E /* ViewController.swift */,
 				932B191828B726930034093E /* Assets.xcassets */,
 				932B191A28B726930034093E /* Main.storyboard */,
-				932B192A28B72F830034093E /* CompactTabsToolbarView.swift */,
+				936EDC4028B7AB0000264165 /* CompactTabs */,
 				932B192728B72D6C0034093E /* MainWindowController */,
-				932B192528B72ADB0034093E /* NSToolbarItemExtensions.swift */,
 				932B191D28B726930034093E /* compactTabs.entitlements */,
 			);
 			path = compactTabs;
@@ -76,9 +73,17 @@
 			isa = PBXGroup;
 			children = (
 				932B192328B729370034093E /* MainWindowController.swift */,
-				932B192828B72D940034093E /* MainWindowController+NSToolbarDelegate.swift */,
+				936EDC3E28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift */,
 			);
 			path = MainWindowController;
+			sourceTree = "<group>";
+		};
+		936EDC4028B7AB0000264165 /* CompactTabs */ = {
+			isa = PBXGroup;
+			children = (
+				932B192A28B72F830034093E /* CompactTabsToolbarView.swift */,
+			);
+			path = CompactTabs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,10 +158,9 @@
 			files = (
 				932B192B28B72F830034093E /* CompactTabsToolbarView.swift in Sources */,
 				932B191728B726920034093E /* ViewController.swift in Sources */,
+				936EDC3F28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift in Sources */,
 				932B191528B726920034093E /* AppDelegate.swift in Sources */,
-				932B192928B72D940034093E /* MainWindowController+NSToolbarDelegate.swift in Sources */,
 				932B192428B729370034093E /* MainWindowController.swift in Sources */,
-				932B192628B72ADB0034093E /* NSToolbarItemExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

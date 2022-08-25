@@ -21,25 +21,36 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
     func configToolbar() {
         if  let unwrappedWindow = self.window {
-            let newToolbar = NSToolbar(identifier: NSToolbar.Identifier.mainWindowToolbarIdentifier)
-            newToolbar.delegate = self
-            newToolbar.allowsUserCustomization = true
-            newToolbar.autosavesConfiguration = true
-            newToolbar.displayMode = .default
+            let toolbar = NSToolbar(identifier: UUID().uuidString)
+            toolbar.delegate = self
+            toolbar.allowsUserCustomization = true
+            toolbar.autosavesConfiguration = true
+            toolbar.displayMode = .default
 
             // Example on center-pinning a toolbar item
-            newToolbar.centeredItemIdentifier = NSToolbarItem.Identifier.compactTabsToolbarItem
+            toolbar.centeredItemIdentifier = .compactTabsToolbarItem
 
             // Hiding the title visibility in order to gain more toolbar space.
             // Set this property to .visible or delete this line to get it back.
             unwrappedWindow.titleVisibility = .hidden
 
-            unwrappedWindow.toolbar = newToolbar
-            unwrappedWindow.toolbar?.validateVisibleItems()
+            unwrappedWindow.toolbar = toolbar
         }
     }
 
     func validateToolbarItem(_ item: NSToolbarItem) -> Bool {
         return true
+    }
+
+    @IBAction func backButtonPressed(_ sender: Any) {
+        if let contentViewController = contentViewController as? ViewController {
+            contentViewController.goBack()
+        }
+    }
+
+    @IBAction func forwardButtonPressed(_ sender: Any) {
+        if let contentViewController = contentViewController as? ViewController {
+            contentViewController.goForward()
+        }
     }
 }
