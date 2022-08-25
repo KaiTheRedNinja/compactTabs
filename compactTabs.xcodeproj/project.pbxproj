@@ -11,6 +11,10 @@
 		932B191728B726920034093E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B191628B726920034093E /* ViewController.swift */; };
 		932B191928B726930034093E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 932B191828B726930034093E /* Assets.xcassets */; };
 		932B191C28B726930034093E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 932B191A28B726930034093E /* Main.storyboard */; };
+		932B192428B729370034093E /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192328B729370034093E /* MainWindowController.swift */; };
+		932B192628B72ADB0034093E /* NSToolbarItemExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192528B72ADB0034093E /* NSToolbarItemExtensions.swift */; };
+		932B192928B72D940034093E /* MainWindowController+NSToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192828B72D940034093E /* MainWindowController+NSToolbarDelegate.swift */; };
+		932B192B28B72F830034093E /* CompactTabsToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192A28B72F830034093E /* CompactTabsToolbarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +24,10 @@
 		932B191828B726930034093E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		932B191B28B726930034093E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		932B191D28B726930034093E /* compactTabs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = compactTabs.entitlements; sourceTree = "<group>"; };
+		932B192328B729370034093E /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
+		932B192528B72ADB0034093E /* NSToolbarItemExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSToolbarItemExtensions.swift; sourceTree = "<group>"; };
+		932B192828B72D940034093E /* MainWindowController+NSToolbarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainWindowController+NSToolbarDelegate.swift"; sourceTree = "<group>"; };
+		932B192A28B72F830034093E /* CompactTabsToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactTabsToolbarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,9 +64,21 @@
 				932B191628B726920034093E /* ViewController.swift */,
 				932B191828B726930034093E /* Assets.xcassets */,
 				932B191A28B726930034093E /* Main.storyboard */,
+				932B192A28B72F830034093E /* CompactTabsToolbarView.swift */,
+				932B192728B72D6C0034093E /* MainWindowController */,
+				932B192528B72ADB0034093E /* NSToolbarItemExtensions.swift */,
 				932B191D28B726930034093E /* compactTabs.entitlements */,
 			);
 			path = compactTabs;
+			sourceTree = "<group>";
+		};
+		932B192728B72D6C0034093E /* MainWindowController */ = {
+			isa = PBXGroup;
+			children = (
+				932B192328B729370034093E /* MainWindowController.swift */,
+				932B192828B72D940034093E /* MainWindowController+NSToolbarDelegate.swift */,
+			);
+			path = MainWindowController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -131,8 +151,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				932B192B28B72F830034093E /* CompactTabsToolbarView.swift in Sources */,
 				932B191728B726920034093E /* ViewController.swift in Sources */,
 				932B191528B726920034093E /* AppDelegate.swift in Sources */,
+				932B192928B72D940034093E /* MainWindowController+NSToolbarDelegate.swift in Sources */,
+				932B192428B729370034093E /* MainWindowController.swift in Sources */,
+				932B192628B72ADB0034093E /* NSToolbarItemExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,6 +297,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Compact Tabs";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -280,6 +305,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = kaitay.compactTabs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -298,6 +324,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Compact Tabs";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -305,6 +332,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = kaitay.compactTabs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
