@@ -11,9 +11,7 @@ extension MainWindowController: NSToolbarDelegate {
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
         [
             .backForwardButtons,
-            .flexibleSpace,
-            .compactTabsToolbarItem,
-            .flexibleSpace
+            .compactTabsToolbarItem
         ]
     }
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
@@ -31,10 +29,10 @@ extension MainWindowController: NSToolbarDelegate {
         switch itemIdentifier {
         case .compactTabsToolbarItem:
             let toolbarItem = NSToolbarItem(itemIdentifier: NSToolbarItem.Identifier.compactTabsToolbarItem)
-            let view = CompactTabsToolbarView(frame: CGRect(x: 0, y: 0, width: 300, height: 20))
-            view.addItems()
+            let view = CompactTabsToolbarView(frame: CGRect(x: 0, y: 0, width: 500, height: 25))
+            view.autoresizingMask = [.width, .height]
+            view.loadView()
             toolbarItem.label = "Compact Tabs"
-            view.autoresizingMask = .width
 
             toolbarItem.view = view
             return toolbarItem

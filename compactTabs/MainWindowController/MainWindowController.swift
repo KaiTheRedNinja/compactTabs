@@ -13,10 +13,22 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
     override func windowDidLoad() {
         super.windowDidLoad()
+
+        self.window?.minSize = NSSize(width: 600, height: 400)
     
         // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 
         configToolbar()
+    }
+
+    override init(window: NSWindow?) {
+        urlBarAddress = "Window init"
+        super.init(window: window)
+    }
+
+    required init?(coder: NSCoder) {
+        urlBarAddress = "Coder init"
+        super.init(coder: coder)
     }
 
     func configToolbar() {
@@ -42,15 +54,29 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         return true
     }
 
-    @IBAction func backButtonPressed(_ sender: Any) {
+    func backButtonPressed(_ sender: Any) {
         if let contentViewController = contentViewController as? ViewController {
             contentViewController.goBack()
         }
     }
 
-    @IBAction func forwardButtonPressed(_ sender: Any) {
+    func forwardButtonPressed(_ sender: Any) {
         if let contentViewController = contentViewController as? ViewController {
             contentViewController.goForward()
+        }
+    }
+
+    func loadPage(address: String) {
+        if let contentViewController = contentViewController as? ViewController {
+            contentViewController.loadPage(address: address)
+        }
+    }
+
+    var urlBarAddress: String {
+        didSet {
+            if let contentViewController = contentViewController as? ViewController {
+                contentViewController.loadPage(address: urlBarAddress)
+            }
         }
     }
 }

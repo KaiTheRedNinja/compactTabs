@@ -43,9 +43,32 @@ class ViewController: NSViewController {
         }
     }
 
+    var focusedTab = 0
     func focusTab(tabIndex: Int) {
         guard tabIndex < tabs.count else { return }
         view.subviews = [tabs[tabIndex]]
+        focusedTab = tabIndex
+    }
+
+    func loadPage(address: String) {
+        // NOTE: If you dont include the protocol, the url will be searched instead.
+        if let url = URL(string: address), url.debugDescription.range(of: "^.+://",
+                                                         options: .regularExpression,
+                                                         range: nil, locale: nil) != nil {
+            loadWebPage(url: url)
+        } else {
+            let url = URL(string: "https://www.google.com/search?q=\(address.replacingOccurrences(of: " ", with: "%20"))")!
+            loadWebPage(url: url)
+        }
+    }
+
+    private func loadWebPage(url: URL, webView: WKWebView? = nil) {
+        let urlrequest = URLRequest(url: url)
+        if let webView = webView {
+            webView.load(urlrequest)
+        } else if let webView = view.subviews.first as? WKWebView {
+            webView.load(urlrequest)
+        }
     }
 
     func createNewWebView(url: URL? = nil, parentView: NSView) -> WKWebView {
@@ -57,9 +80,7 @@ class ViewController: NSViewController {
         webView.autoresizingMask = [.height, .width]
 
         if let url = url {
-            print("Loaded url: \(url.debugDescription)")
-            let urlrequest = URLRequest(url: url)
-            webView.load(urlrequest)
+            loadWebPage(url: url, webView: webView)
         }
 
         return webView
