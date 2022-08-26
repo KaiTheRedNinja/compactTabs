@@ -12,6 +12,7 @@ class ViewController: NSViewController {
 
     var tabs: [WebPageView] = []
     var mainWindow: MainWindowController?
+    var compactTabsItem: CompactTabsToolbarView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,8 @@ class ViewController: NSViewController {
             createNewWebView(url: URL(string: "https://browserbench.org/Speedometer2.1/")!),
             createNewWebView(url: URL(string: "https://www.desmos.com/calculator")!)
         ]
+
+        compactTabsItem?.updateTabs()
 
         focusTab(tabIndex: 0)
 
@@ -55,6 +58,7 @@ class ViewController: NSViewController {
         view.subviews = [tabs[tabIndex]]
         mainWindow?.urlBarAddress = tabs[tabIndex].wkView?.url?.debugDescription ?? ""
         focusedTab = tabIndex
+        compactTabsItem?.updateTabs()
     }
 
     // if a web page has navigated, update the url bar.

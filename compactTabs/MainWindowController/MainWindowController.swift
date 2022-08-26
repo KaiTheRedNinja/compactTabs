@@ -25,6 +25,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
         if let viewController = self.contentViewController as? ViewController {
             viewController.mainWindow = self
+            viewController.compactTabsItem = compactTabsItem
         }
     }
 
@@ -110,6 +111,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
                 compactTabsItem?.textField.stringValue = urlBarAddress
                 contentViewController.loadPage(address: urlBarAddress)
             }
+            compactTabsItem?.updateTabs()
         }
     }
 }
