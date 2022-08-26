@@ -20,6 +20,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
     
         // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 
+        self.window?.delegate = self
         configToolbar()
 
         if let viewController = self.contentViewController as? ViewController {
@@ -45,7 +46,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
             toolbar.autosavesConfiguration = true
             toolbar.displayMode = .default
 
-            // Example on center-pinning a toolbar item
+            // Center-pin the compact tabs toolbar item
             toolbar.centeredItemIdentifier = .compactTabsToolbarItem
 
             // Hiding the title visibility in order to gain more toolbar space.
@@ -110,5 +111,21 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
                 contentViewController.loadPage(address: urlBarAddress)
             }
         }
+    }
+}
+
+extension MainWindowController: NSWindowDelegate {
+    func windowDidResize(_ notification: Notification) {
+        // resize the tabs toolbar item
+
+        // get the space before and after the compact tabs item
+        // exclude flexible spaces, because they automatically expand
+
+        var space: CGFloat = 120.0
+        for item in self.window?.toolbar?.items ?? [] {
+            guard item.itemIdentifier != .flexibleSpace && item.itemIdentifier != .compactTabsToolbarItem else { continue }
+            space += item.view?.frame.width ?? 0
+        }
+        compactTabsItem?.frame = NSRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - space, height: 25)
     }
 }

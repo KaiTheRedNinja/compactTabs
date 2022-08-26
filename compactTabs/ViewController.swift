@@ -19,7 +19,7 @@ class ViewController: NSViewController {
         tabs = [
             createNewWebView(url: URL(string: "https://www.kagi.com")!),
             createNewWebView(url: URL(string: "https://browser.kagi.com")!),
-            createNewWebView(url: URL(string: "https://www.google.com")!),
+            createNewWebView(url: URL(string: "https://browserbench.org/Speedometer2.1/")!),
             createNewWebView(url: URL(string: "https://www.desmos.com/calculator")!)
         ]
 

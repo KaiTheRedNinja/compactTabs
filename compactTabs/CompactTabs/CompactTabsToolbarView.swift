@@ -10,6 +10,8 @@ import Cocoa
 class CompactTabsToolbarView: NSView {
 
     var textField: NSTextField
+    var goLeftButton: NSButton?
+    var goRightButton: NSButton?
 
     override init(frame frameRect: NSRect) {
         textField = NSTextField(frame: frameRect)
@@ -34,6 +36,7 @@ class CompactTabsToolbarView: NSView {
         goLeftTab.isBordered = false
         goLeftTab.frame = CGRect(x: rect.width-50, y: (rect.height-12)/2, width: 25, height: 12)
         goLeftTab.bezelStyle = .regularSquare
+        goLeftButton = goLeftTab
         self.addSubview(goLeftTab)
 
         // init the go forward button
@@ -41,6 +44,7 @@ class CompactTabsToolbarView: NSView {
         goRightTab.isBordered = false
         goRightTab.frame = CGRect(x: rect.width-25, y: (rect.height-12)/2, width: 25, height: 12)
         goRightTab.bezelStyle = .regularSquare
+        goRightButton = goRightTab
         self.addSubview(goRightTab)
 
         // init the address bar
@@ -55,23 +59,22 @@ class CompactTabsToolbarView: NSView {
     }
 
     @objc func goLeft() {
-        print("Changing tabs")
         if let controller = self.window?.windowController as? MainWindowController {
-            print("Changing tab")
             controller.goLeftOneTab()
-        } else {
-            print("No controller found")
         }
     }
 
     @objc func goRight() {
-        print("Changing tabs")
         if let controller = self.window?.windowController as? MainWindowController {
             print("Changing tab")
             controller.goRightOneTab()
-        } else {
-            print("No controller found")
         }
+    }
+
+    override func resizeSubviews(withOldSize oldSize: NSSize) {
+        goLeftButton?.frame = NSRect(x: frame.width-50, y: (frame.height-12)/2, width: 25, height: 12)
+        goRightButton?.frame = NSRect(x: frame.width-25, y: (frame.height-12)/2, width: 25, height: 12)
+        textField.frame = NSRect(x: 0, y: 0, width: frame.width-50, height: frame.height)
     }
 }
 
