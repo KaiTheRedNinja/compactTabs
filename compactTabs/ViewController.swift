@@ -18,7 +18,9 @@ class ViewController: NSViewController {
 
         tabs = [
             createNewWebView(url: URL(string: "https://www.kagi.com")!),
-            createNewWebView(url: URL(string: "https://browser.kagi.com")!)
+            createNewWebView(url: URL(string: "https://browser.kagi.com")!),
+            createNewWebView(url: URL(string: "https://www.google.com")!),
+            createNewWebView(url: URL(string: "https://www.desmos.com/calculator")!)
         ]
 
         focusTab(tabIndex: 0)
@@ -48,8 +50,10 @@ class ViewController: NSViewController {
     var focusedTab = 0
     func focusTab(tabIndex: Int) {
         guard tabIndex < tabs.count else { return }
-        print("Focusing \(focusedTab)")
+        print("At \(focusedTab), Focusing \(tabIndex)")
+        tabs[tabIndex].frame = view.frame
         view.subviews = [tabs[tabIndex]]
+        mainWindow?.urlBarAddress = tabs[tabIndex].wkView?.url?.debugDescription ?? ""
         focusedTab = tabIndex
     }
 
@@ -57,6 +61,7 @@ class ViewController: NSViewController {
     func updateURLBar(toAddress address: String, sender: WebPageView) {
         if tabs[focusedTab] == sender, let window = mainWindow {
             print("Update tab name to \(address)")
+            print("Current tab: \(focusedTab)")
             window.urlBarAddress = address
         } else {
             print("a background tab navigated to a new page")

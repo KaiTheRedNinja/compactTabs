@@ -22,6 +22,9 @@ class WebPageView: NSView {
     /// Add a web view to the page
     func attachViews(address: String? = nil, parentView: NSView) {
         let wkView = WKWebView()
+        // Configure the webView
+        wkView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15"
         wkView.navigationDelegate = self
         wkView.frame = CGRect(
             x: parentView.frame.minX, y: parentView.frame.minY,

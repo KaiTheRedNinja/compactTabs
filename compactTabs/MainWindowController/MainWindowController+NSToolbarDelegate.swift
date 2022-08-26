@@ -29,9 +29,8 @@ extension MainWindowController: NSToolbarDelegate {
         switch itemIdentifier {
         case .compactTabsToolbarItem: // the compact tabs toolbar item
             let toolbarItem = NSToolbarItem(itemIdentifier: NSToolbarItem.Identifier.compactTabsToolbarItem)
-            let view = CompactTabsToolbarView(frame: CGRect(x: 0, y: 0, width: 500, height: 25))
+            let view = CompactTabsToolbarView(frame: CGRect(x: 0, y: 0, width: 700, height: 25))
             view.autoresizingMask = [.width, .height]
-            view.loadView()
             toolbarItem.label = "Compact Tabs"
 
             toolbarItem.view = view
