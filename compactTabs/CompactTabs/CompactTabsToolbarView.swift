@@ -64,17 +64,18 @@ class CompactTabsToolbarView: NSView {
 
     // TODO: Don't recreate the tabs every time
     func updateTabs() {
+        print("Updating tabs")
         guard let viewController = viewController else { return }
         tabs.forEach({ $0.removeFromSuperview() })
         tabs = []
         for (index, tab) in viewController.tabs.enumerated() {
             let distance = tabs.last?.frame.maxX ?? textField.frame.maxX
             let tabView = TabView(frame: CGRect(x: distance + 10, y: 2, width: 70, height: frame.height-4))
+            tabView.compactTabsItem = self
             if viewController.focusedTab == index {
                 tabView.becomeMain()
             }
 
-            tabView.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab(sender:))))
             tabs.append(tabView)
             tabView.updateWith(url: tab.wkView?.url)
             addSubview(tabView)
@@ -82,17 +83,8 @@ class CompactTabsToolbarView: NSView {
     }
 
     @objc func focusTab(sender: TabView) {
-//        var toFocus = 0
-//        for (index, tab) in tabs.enumerated() {
-//            if sender.id == tab.id {
-//                toFocus = index
-//                tab.becomeMain()
-//            } else {
-//                tab.resignMain()
-//            }
-//        }
-//        print("Focusing tab \(toFocus)")
-//        viewController?.focusTab(tabIndex: toFocus)
+        guard let toFocus = tabs.firstIndex(of: sender) else { return }
+        viewController?.focusTab(tabIndex: toFocus)
     }
 
     @objc func goLeft() {

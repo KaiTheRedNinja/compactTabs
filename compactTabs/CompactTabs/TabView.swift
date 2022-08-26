@@ -44,10 +44,8 @@ class TabView: NSView, Identifiable {
 
         favicon.image = NSImage(named: "unknown")!
         favicon.frame = CGRect(x: 4, y: 4, width: rect.height-8, height: rect.height-8)
-        print(favicon.frame)
 
         textView.frame = CGRect(x: favicon.frame.maxX + 4, y: rect.minY-5, width: rect.width-favicon.frame.maxX-4, height: rect.height)
-        print(textView.frame)
         textView.drawsBackground = false
         textView.isBezeled = false
         textView.stringValue = "IDK really"
@@ -56,6 +54,13 @@ class TabView: NSView, Identifiable {
         addSubview(textView)
 
         addSubview(favicon)
+
+        addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
+    }
+
+    @objc func focusTab() {
+        print("Focusing")
+        compactTabsItem?.focusTab(sender: self)
     }
 
     func becomeMain() {

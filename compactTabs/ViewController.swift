@@ -51,14 +51,16 @@ class ViewController: NSViewController {
 
     // helper function to focus a specific tab index
     var focusedTab = 0
-    func focusTab(tabIndex: Int) {
+    func focusTab(tabIndex: Int, update: Bool = true) {
         guard tabIndex < tabs.count else { return }
         print("At \(focusedTab), Focusing \(tabIndex)")
         tabs[tabIndex].frame = view.frame
         view.subviews = [tabs[tabIndex]]
         mainWindow?.urlBarAddress = tabs[tabIndex].wkView?.url?.debugDescription ?? ""
         focusedTab = tabIndex
-        compactTabsItem?.updateTabs()
+        if update {
+            compactTabsItem?.updateTabs()
+        }
     }
 
     // if a web page has navigated, update the url bar.
