@@ -42,7 +42,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         if  let unwrappedWindow = self.window {
             let toolbar = NSToolbar(identifier: UUID().uuidString)
             toolbar.delegate = self
-            toolbar.allowsUserCustomization = true
+            toolbar.allowsUserCustomization = false // TODO: Allow customisation of toolbar
             toolbar.autosavesConfiguration = true
             toolbar.displayMode = .default
 
@@ -124,7 +124,7 @@ extension MainWindowController: NSWindowDelegate {
         var space: CGFloat = 120.0
         for item in self.window?.toolbar?.items ?? [] {
             guard item.itemIdentifier != .flexibleSpace && item.itemIdentifier != .compactTabsToolbarItem else { continue }
-            space += item.view?.frame.width ?? 0
+            space += item.maxSize.width
         }
         compactTabsItem?.frame = NSRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - space, height: 25)
     }
