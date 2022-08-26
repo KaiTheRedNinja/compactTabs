@@ -32,6 +32,7 @@ extension MainWindowController: NSToolbarDelegate {
 
             let view = CompactTabsToolbarView(frame: CGRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - 100, height: 25))
             view.autoresizingMask = [.width, .height]
+            view.viewController = self.contentViewController as? ViewController
             toolbarItem.label = "Compact Tabs"
 
             toolbarItem.view = view

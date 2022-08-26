@@ -10,8 +10,10 @@ import Cocoa
 class CompactTabsToolbarView: NSView {
 
     var textField: NSTextField
+    var viewController: ViewController?
     var goLeftButton: NSButton?
     var goRightButton: NSButton?
+    var tab: NSView?
 
     override init(frame frameRect: NSRect) {
         textField = NSTextField(frame: frameRect)
@@ -48,7 +50,7 @@ class CompactTabsToolbarView: NSView {
         self.addSubview(goRightTab)
 
         // init the address bar
-        textField = NSTextField(frame: NSRect(x: 0, y: 0, width: rect.width-50, height: rect.height))
+        textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 300/*rect.width-50*/, height: rect.height))
         if let window = self.window?.windowController as? MainWindowController {
             textField.stringValue = window.urlBarAddress
         } else {
@@ -56,6 +58,15 @@ class CompactTabsToolbarView: NSView {
         }
         textField.delegate = self
         addSubview(textField)
+
+        // TEMP: Init a tab
+        let tab = NSView()
+        tab.frame = CGRect(x: textField.frame.maxX + 10, y: 2, width: 70, height: rect.height-4)
+        tab.wantsLayer = true
+        tab.layer?.backgroundColor = NSColor.gray.cgColor
+        tab.layer?.cornerRadius = 4
+        self.tab = tab
+        addSubview(tab)
     }
 
     @objc func goLeft() {
@@ -74,7 +85,7 @@ class CompactTabsToolbarView: NSView {
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         goLeftButton?.frame = NSRect(x: frame.width-50, y: (frame.height-12)/2, width: 25, height: 12)
         goRightButton?.frame = NSRect(x: frame.width-25, y: (frame.height-12)/2, width: 25, height: 12)
-        textField.frame = NSRect(x: 0, y: 0, width: frame.width-50, height: frame.height)
+        textField.frame = NSRect(x: 0, y: 0, width: 300, height: frame.height)
     }
 }
 
