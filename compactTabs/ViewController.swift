@@ -44,6 +44,7 @@ class ViewController: NSViewController {
         }
     }
 
+    // helper function to focus a specific tab index
     var focusedTab = 0
     func focusTab(tabIndex: Int) {
         guard tabIndex < tabs.count else { return }
@@ -52,6 +53,7 @@ class ViewController: NSViewController {
         focusedTab = tabIndex
     }
 
+    // if a web page has navigated, update the url bar.
     func updateURLBar(toAddress address: String, sender: WebPageView) {
         if tabs[focusedTab] == sender, let window = mainWindow {
             print("Update tab name to \(address)")
@@ -81,6 +83,7 @@ class ViewController: NSViewController {
         }
     }
 
+    /// Helper function to create a new web view
     func createNewWebView(url: URL? = nil) -> WebPageView {
         let webView = WebPageView()
         webView.viewController = self

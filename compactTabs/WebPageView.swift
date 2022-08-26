@@ -19,6 +19,7 @@ class WebPageView: NSView {
         // Drawing code here.
     }
 
+    /// Add a web view to the page
     func attachViews(address: String? = nil, parentView: NSView) {
         let wkView = WKWebView()
         wkView.navigationDelegate = self
@@ -35,6 +36,7 @@ class WebPageView: NSView {
         }
     }
 
+    /// Safely load a page. If the url is invalid, treat it as a search query.
     func loadPage(address: String) {
         // NOTE: If you dont include the protocol, the url will be searched instead.
         if let url = URL(string: address), url.debugDescription.range(of: "^.+://",
