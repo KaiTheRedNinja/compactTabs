@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import WebKit
 
 class TabView: NSView, Identifiable {
 
@@ -71,14 +72,20 @@ class TabView: NSView, Identifiable {
         layer?.backgroundColor = .none
     }
 
-    func updateWith(url: URL?, title: String? = nil) {
-        if let title = title {
-            textView.stringValue = title
-        } else if let url = url {
-            textView.stringValue = url.debugDescription
-        } else {
-            textView.stringValue = "Unknown"
-        }
+    func updateWith(wkView: WKWebView) {
+        textView.stringValue = wkView.title ?? (wkView.url?.relativePath ?? "Unknown")
         favicon = NSImageView(image: NSImage(named: "unknown")!)
+    }
+
+    override func resizeSubviews(withOldSize oldSize: NSSize) {
+        if frame.width > 60 {
+            favicon.frame = CGRect(x: 4, y: 4, width: frame.height-8, height: frame.height-8)
+            textView.isHidden = false
+            textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-5, width: frame.width-favicon.frame.maxX-4, height: frame.height)
+        } else {
+            favicon.frame = CGRect(x: 0, y: 4, width: frame.width, height: frame.height-8)
+            favicon.imageAlignment = .alignCenter
+            textView.isHidden = true
+        }
     }
 }

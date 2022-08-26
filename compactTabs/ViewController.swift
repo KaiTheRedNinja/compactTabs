@@ -24,8 +24,6 @@ class ViewController: NSViewController {
             createNewWebView(url: URL(string: "https://www.desmos.com/calculator")!)
         ]
 
-        compactTabsItem?.updateTabs()
-
         focusTab(tabIndex: 0)
 
         // Do any additional setup after loading the view.

@@ -11,8 +11,6 @@ class CompactTabsToolbarView: NSView {
 
     var textField: NSTextField
     var viewController: ViewController?
-    var goLeftButton: NSButton?
-    var goRightButton: NSButton?
     var tabs: [TabView]
 
     override init(frame frameRect: NSRect) {
@@ -35,22 +33,6 @@ class CompactTabsToolbarView: NSView {
     }
 
     func addViews(rect: NSRect) {
-        // init the go back button
-        let goLeftTab = NSButton(image: NSImage(named: "chevron.left")!, target: self, action: #selector(goLeft))
-        goLeftTab.isBordered = false
-        goLeftTab.frame = CGRect(x: rect.width-50, y: (rect.height-12)/2, width: 25, height: 12)
-        goLeftTab.bezelStyle = .regularSquare
-        goLeftButton = goLeftTab
-        self.addSubview(goLeftTab)
-
-        // init the go forward button
-        let goRightTab = NSButton(image: NSImage(named: "chevron.right")!, target: self, action: #selector(goRight))
-        goRightTab.isBordered = false
-        goRightTab.frame = CGRect(x: rect.width-25, y: (rect.height-12)/2, width: 25, height: 12)
-        goRightTab.bezelStyle = .regularSquare
-        goRightButton = goRightTab
-        self.addSubview(goRightTab)
-
         // init the address bar
         textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 230, height: rect.height))
         if let window = self.window?.windowController as? MainWindowController {
@@ -77,8 +59,27 @@ class CompactTabsToolbarView: NSView {
             }
 
             tabs.append(tabView)
-            tabView.updateWith(url: tab.wkView?.url)
+            if let wkView = tab.wkView {
+                tabView.updateWith(wkView: wkView)
+            }
             addSubview(tabView)
+        }
+        updateTabFrames()
+    }
+
+    let mainTabWidth = CGFloat(140.0)
+    func updateTabFrames() {
+        guard let mainTabIndex = viewController?.focusedTab else { return }
+        let spaceForTabs = frame.width - textField.frame.maxX - 10
+        let spaceForNonMainTabs = spaceForTabs - mainTabWidth
+        let nonMainTabWidth = (spaceForNonMainTabs/CGFloat(tabs.count-1)) - 10
+        print("non main width: \(nonMainTabWidth)")
+
+        for (index, tab) in tabs.enumerated() {
+            let distance = index == 0 ? textField.frame.maxX : tabs[index-1].frame.maxX
+            tab.frame = CGRect(x: distance + 10, y: 2,
+                               width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
+                               height: frame.height-4)
         }
     }
 
@@ -101,9 +102,8 @@ class CompactTabsToolbarView: NSView {
     }
 
     override func resizeSubviews(withOldSize oldSize: NSSize) {
-        goLeftButton?.frame = NSRect(x: frame.width-50, y: (frame.height-12)/2, width: 25, height: 12)
-        goRightButton?.frame = NSRect(x: frame.width-25, y: (frame.height-12)/2, width: 25, height: 12)
         textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
+        updateTabFrames()
     }
 }
 

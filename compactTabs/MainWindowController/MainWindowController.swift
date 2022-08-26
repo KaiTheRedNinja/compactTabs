@@ -118,12 +118,13 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
 extension MainWindowController: NSWindowDelegate {
     func windowDidResize(_ notification: Notification) {
+        print("Resized to \(window?.frame.width ?? 0)")
         // resize the tabs toolbar item
 
         // get the space before and after the compact tabs item
         // exclude flexible spaces, because they automatically expand
 
-        var space: CGFloat = 120.0
+        var space: CGFloat = 140.0
         for item in self.window?.toolbar?.items ?? [] {
             guard item.itemIdentifier != .flexibleSpace && item.itemIdentifier != .compactTabsToolbarItem else { continue }
             space += item.maxSize.width
