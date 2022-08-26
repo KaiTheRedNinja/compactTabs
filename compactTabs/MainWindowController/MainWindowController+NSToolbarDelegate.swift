@@ -35,12 +35,13 @@ extension MainWindowController: NSToolbarDelegate {
             toolbarItem.label = "Compact Tabs"
 
             toolbarItem.view = view
+            self.compactTabsItem = view
             return toolbarItem
         case .backForwardButtons:
             let toolbarItem = NSToolbarItem(itemIdentifier: NSToolbarItem.Identifier.backForwardButtons)
             let view = NSView()
             toolbarItem.label = "Back/Forward"
-            view.frame = CGRect(x: 0, y: 0, width: 50, height: 15)
+            view.frame = CGRect(x: 0, y: 0, width: 50, height: 12)
 
             let leftButton = NSButton(image: NSImage(named: "chevron.left")!, target: nil, action: #selector(goBack))
             leftButton.isBordered = false

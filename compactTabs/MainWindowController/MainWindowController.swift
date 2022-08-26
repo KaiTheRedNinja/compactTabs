@@ -11,6 +11,8 @@ import Cocoa
 
 class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
+    var compactTabsItem: CompactTabsToolbarView?
+
     override func windowDidLoad() {
         super.windowDidLoad()
 
@@ -19,6 +21,10 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 
         configToolbar()
+
+        if let viewController = self.contentViewController as? ViewController {
+            viewController.mainWindow = self
+        }
     }
 
     override init(window: NSWindow?) {
@@ -75,6 +81,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
     var urlBarAddress: String {
         didSet {
             if let contentViewController = contentViewController as? ViewController {
+                compactTabsItem?.textField.stringValue = urlBarAddress
                 contentViewController.loadPage(address: urlBarAddress)
             }
         }

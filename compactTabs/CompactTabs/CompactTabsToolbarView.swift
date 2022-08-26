@@ -17,7 +17,7 @@ class CompactTabsToolbarView: NSView {
         if let window = self.window?.windowController as? MainWindowController {
             textField.stringValue = window.urlBarAddress
         } else {
-            textField.stringValue = "init from frame"
+            textField.stringValue = ""
         }
         textField.delegate = self
     }

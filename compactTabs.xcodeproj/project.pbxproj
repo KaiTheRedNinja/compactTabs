@@ -13,6 +13,7 @@
 		932B191C28B726930034093E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 932B191A28B726930034093E /* Main.storyboard */; };
 		932B192428B729370034093E /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192328B729370034093E /* MainWindowController.swift */; };
 		932B192B28B72F830034093E /* CompactTabsToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192A28B72F830034093E /* CompactTabsToolbarView.swift */; };
+		935BCDC028B84BE00032960F /* WebPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935BCDBF28B84BE00032960F /* WebPageView.swift */; };
 		936EDC3F28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936EDC3E28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		932B191D28B726930034093E /* compactTabs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = compactTabs.entitlements; sourceTree = "<group>"; };
 		932B192328B729370034093E /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		932B192A28B72F830034093E /* CompactTabsToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactTabsToolbarView.swift; sourceTree = "<group>"; };
+		935BCDBF28B84BE00032960F /* WebPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPageView.swift; sourceTree = "<group>"; };
 		936EDC3E28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainWindowController+NSToolbarDelegate.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,6 +62,7 @@
 			children = (
 				932B191428B726920034093E /* AppDelegate.swift */,
 				932B191628B726920034093E /* ViewController.swift */,
+				935BCDBF28B84BE00032960F /* WebPageView.swift */,
 				932B191828B726930034093E /* Assets.xcassets */,
 				932B191A28B726930034093E /* Main.storyboard */,
 				936EDC4028B7AB0000264165 /* CompactTabs */,
@@ -156,6 +159,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				935BCDC028B84BE00032960F /* WebPageView.swift in Sources */,
 				932B192B28B72F830034093E /* CompactTabsToolbarView.swift in Sources */,
 				932B191728B726920034093E /* ViewController.swift in Sources */,
 				936EDC3F28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift in Sources */,
