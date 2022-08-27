@@ -26,8 +26,9 @@ My Technical Task for Orion
 12. Implement scrolling of tab bar if non-main tabs are minimum width but theres still not enough space
 13. Allow all tabs (both selected and non-selected) to expand in width if theres excess space
 14. Allow closing of tabs
+15. Allow middle click to close tab
 
 ## Todo:
-- Tab Creation
 - Animations
 - Tab reordering
+- Favicons
