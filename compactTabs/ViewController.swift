@@ -60,7 +60,7 @@ class ViewController: NSViewController {
     let newTabPage = URL(string: "https://www.kagi.com")!
     func createTab() {
         tabs.append(createNewWebView(url: newTabPage))
-        compactTabsItem?.updateTabs()
+        focusTab(tabIndex: tabs.count-1)
     }
 
     func closeTab(tabIndex: Int? = nil) {

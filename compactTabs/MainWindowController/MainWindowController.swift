@@ -98,10 +98,18 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
     }
 
     override func keyDown(with event: NSEvent) {
-        if event.keyCode == 13 && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command { // cmd-w
-            print("Cmd-w pressed")
-            if let contentViewController = contentViewController as? ViewController {
-                contentViewController.closeTab()
+        if event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command {
+            print(event.keyCode)
+            if event.keyCode == 13 { // cmd-w
+                print("Cmd-w pressed")
+                if let contentViewController = contentViewController as? ViewController {
+                    contentViewController.closeTab()
+                }
+            } else if event.keyCode == 3 { // cmd-t
+                print("Cmd-t pressed")
+                if let contentViewController = contentViewController as? ViewController {
+                    contentViewController.createTab()
+                }
             }
         }
     }
