@@ -88,47 +88,33 @@ class CompactTabsToolbarView: NSView {
 
                 tabs.append(tabView)
                 scrollView?.documentView?.addSubview(tabView)
-                tabView.updateWith(wkView: tab.wkView)
+                tabView.updateWith(webPageView: tab)
             }
         } else if tabs.count > viewController.tabs.count {
             print("Deleting excess tabs")
             // too many tabs, delete extra tabs
+            var deletedTabs = 0
             for (tabIndex, tab) in tabs.enumerated() {
-                if tabIndex >= viewController.tabs.count {
-                    tab.removeFromSuperview()
+                if let webPage = tab.ascociatedWebPageView, !viewController.tabs.contains(webPage) {
+                    print("Tab \(tab.textView.stringValue) to be removed/")
+                    tab.willBeDeleted = true
+                    deletedTabs += 1
                 } else {
-                    tab.updateWith(wkView: viewController.tabs[tabIndex].wkView)
+                    tab.updateWith(webPageView: viewController.tabs[tabIndex-deletedTabs])
                 }
             }
-            tabs = Array(tabs[0..<viewController.tabs.count])
         }
 
         // update the tab body
+        var deletedTabs = 0
         for (index, tabView) in tabs.enumerated() {
-            tabView.updateWith(wkView: viewController.tabs[index].wkView)
-        }
-
-        updateTabFrames(animated: true)
-    }
-
-    /// Completely reload the tab bar by deleting all tabs and reloading
-    func hardUpdateTabs() {
-        // load the web view
-        guard let viewController = viewController else { return }
-        tabs.forEach({ $0.removeFromSuperview() })
-        tabs = []
-        for (index, tab) in viewController.tabs.enumerated() {
-            let distance = tabs.last?.frame.maxX ?? 0
-            let tabView = TabView(frame: CGRect(x: distance + 10, y: 2, width: 70, height: frame.height-4))
-            tabView.compactTabsItem = self
-            if viewController.focusedTab == index {
-                tabView.becomeMain()
+            if !tabView.willBeDeleted {
+                tabView.updateWith(webPageView: viewController.tabs[index-deletedTabs])
+            } else {
+                deletedTabs += 1
             }
-
-            tabs.append(tabView)
-            tabView.updateWith(wkView: tab.wkView)
-            scrollView?.documentView?.addSubview(tabView)
         }
+
         updateTabFrames(animated: true)
     }
 
@@ -158,21 +144,24 @@ class CompactTabsToolbarView: NSView {
         guard let mainTabIndex = viewController?.focusedTab, let scrollView = scrollView else { return }
         var mainTabWidth = defaultMainTabWidth
         var nonMainTabWidth = minimumNonMainTabWidth
+        let numberOfRealTabs = tabs.filter({ !$0.willBeDeleted }).count
 
         // check if theres enough space for everything to be full width
-        if (mainTabWidth + 10) * CGFloat(tabs.count) - 10 <= scrollView.frame.width {
+        if (mainTabWidth + 10) * CGFloat(numberOfRealTabs) - 10 <= scrollView.frame.width {
             // resize everything to fit the view
-            mainTabWidth = (scrollView.frame.width+10) / CGFloat(tabs.count) - 10
+            mainTabWidth = (scrollView.frame.width+10) / CGFloat(numberOfRealTabs) - 10
             nonMainTabWidth = mainTabWidth
         } else {
             // the main tab must be 140 wide, so constrain the non main tabs
             let availableSpace = scrollView.frame.width-mainTabWidth
-            nonMainTabWidth = max((availableSpace / CGFloat(tabs.count-1)) - 10,
+            nonMainTabWidth = max((availableSpace / CGFloat(numberOfRealTabs-1)) - 10,
                                   minimumNonMainTabWidth)
         }
 
         var distance = CGFloat(-10)
-        for (index, tab) in tabs.enumerated() {
+        var index = 0
+        for tab in tabs {
+            var newWidth = tab.willBeDeleted ? -10 : (index == mainTabIndex ? mainTabWidth : nonMainTabWidth)
             if animated {
                 print("Animating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
                 NSAnimationContext.runAnimationGroup({ context in
@@ -180,20 +169,35 @@ class CompactTabsToolbarView: NSView {
 
                     // Change the width
                     tab.animator().frame = CGRect(x: distance + 10, y: 0,
-                                                  width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
+                                                  width: newWidth,
                                                   height: frame.height-4)
-                })
+                }) {
+                    if tab.willBeDeleted {
+                        print("Deleting tab")
+                        tab.removeFromSuperview()
+                        self.tabs.removeAll(where: {
+                            $0 == tab
+                        })
+                    }
+                }
             } else {
                 print("Updating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
                 tab.frame = CGRect(x: distance + 10, y: 0,
-                                              width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
+                                              width: newWidth,
                                               height: frame.height-4)
+                if tab.willBeDeleted {
+                    tab.removeFromSuperview()
+                }
             }
-            distance = distance + 10 + (index == mainTabIndex ? mainTabWidth : nonMainTabWidth)
+            distance = distance + 10 + newWidth
             if mainTabIndex == index {
                 tab.becomeMain()
             } else {
                 tab.resignMain()
+            }
+
+            if !tab.willBeDeleted {
+                index += 1
             }
         }
 

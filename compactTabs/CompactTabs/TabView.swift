@@ -11,10 +11,13 @@ import WebKit
 class TabView: NSView, Identifiable {
 
     var id = UUID()
+    var ascociatedWebPageView: WebPageView?
 
     var favicon: NSButton
     var faviconImage: NSImage
     var textView: NSTextField
+
+    var willBeDeleted: Bool = false
 
     var compactTabsItem: CompactTabsToolbarView?
 
@@ -96,13 +99,15 @@ class TabView: NSView, Identifiable {
         layer?.backgroundColor = .none
     }
 
-    func updateWith(wkView: WKWebView?, attempt: Double = 0) {
+    func updateWith(webPageView: WebPageView?, attempt: Double = 0) {
+        self.ascociatedWebPageView = webPageView
+        let wkView = webPageView?.wkView
         textView.stringValue = wkView?.title ?? (wkView?.url?.relativePath ?? "Unknown")
         if textView.stringValue == "" {
             textView.stringValue = "Loading"
             // keep on trying to see if the web view has loaded, larger delay between each attempt
             DispatchQueue.main.asyncAfter(deadline: .now() + attempt, execute: {
-                self.updateWith(wkView: wkView, attempt: attempt + 1)
+                self.updateWith(webPageView: webPageView, attempt: attempt + 1)
             })
         }
         if let url = wkView?.url, let cachedIcon = TabView.faviconCache[url] {
@@ -118,6 +123,7 @@ class TabView: NSView, Identifiable {
     }
 
     override func resizeSubviews(withOldSize oldSize: NSSize) {
+        guard !willBeDeleted else { return }
         if frame.width > 60 {
             textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
 
