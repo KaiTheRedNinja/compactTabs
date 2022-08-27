@@ -57,6 +57,40 @@ class CompactTabsToolbarView: NSView {
     // TODO: Don't recreate the tabs every time
     func updateTabs() {
         guard let viewController = viewController else { return }
+        // get the number of tabs there are, creating and removing tabs as needed
+        if tabs.count < viewController.tabs.count {
+            print("Creating missing tabs")
+            // missing tabs, just create the remaining tabs
+            let originalTabCount = tabs.count
+            for (tabIndex, tab) in viewController.tabs.enumerated() {
+                if tabIndex < originalTabCount { continue }
+                let distance = tabs.last?.frame.maxX ?? 0
+                let tabView = TabView(frame: CGRect(x: distance + 10, y: 2, width: 70, height: frame.height-4))
+                tabView.compactTabsItem = self
+
+                tabs.append(tabView)
+                tabView.updateWith(wkView: tab.wkView)
+                scrollView?.documentView?.addSubview(tabView)
+            }
+        } else if tabs.count > viewController.tabs.count {
+            print("Deleting excess tabs")
+            // too many tabs, delete extra tabs
+            tabs = Array(tabs[0..<viewController.tabs.count])
+        }
+
+        // update the tab body
+        for (index, tabView) in tabs.enumerated() {
+            tabView.updateWith(wkView: viewController.tabs[index].wkView)
+        }
+        updateTabFrames()
+    }
+
+    let mainTabWidth = CGFloat(140.0)
+
+    /// Completely reload the tab bar by deleting all tabs and reloading
+    func hardUpdateTabs() {
+        // load the web view
+        guard let viewController = viewController else { return }
         tabs.forEach({ $0.removeFromSuperview() })
         tabs = []
         for (index, tab) in viewController.tabs.enumerated() {
@@ -74,7 +108,7 @@ class CompactTabsToolbarView: NSView {
         updateTabFrames()
     }
 
-    let mainTabWidth = CGFloat(140.0)
+    /// Soft reload the tab bar by editing tabs
     func updateTabFrames() {
         guard let mainTabIndex = viewController?.focusedTab else { return }
         let spaceForTabs = frame.width - textField.frame.maxX - 10
@@ -86,6 +120,11 @@ class CompactTabsToolbarView: NSView {
             tab.frame = CGRect(x: distance + 10, y: 0,
                                width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
                                height: frame.height-4)
+            if mainTabIndex == index {
+                tab.becomeMain()
+            } else {
+                tab.resignMain()
+            }
         }
 
         scrollView?.documentView?.frame = NSRect(x: 0, y: 0,
@@ -103,7 +142,7 @@ class CompactTabsToolbarView: NSView {
         scrollView?.frame = NSRect(x: textField.frame.maxX+10, y: 2,
                                    width: frame.width-textField.frame.maxX-10,
                                    height: frame.height-4)
-        updateTabFrames()
+        updateTabs()
     }
 }
 
