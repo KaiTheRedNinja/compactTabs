@@ -21,7 +21,7 @@ class ViewController: NSViewController {
             createNewWebView(url: URL(string: "https://www.kagi.com")!),
             createNewWebView(url: URL(string: "https://browser.kagi.com")!),
             createNewWebView(url: URL(string: "https://browserbench.org/Speedometer2.1/")!),
-            createNewWebView(url: URL(string: "https://www.desmos.com/calculator")!)
+            createNewWebView(url: URL(string: "https://developer.apple.com")!)
         ]
 
         focusTab(tabIndex: 0)
@@ -51,6 +51,12 @@ class ViewController: NSViewController {
         if let webView = view.subviews.first as? WebPageView {
             webView.refresh()
         }
+    }
+
+    let newTabPage = URL(string: "https://www.kagi.com")!
+    func createTab() {
+        tabs.append(createNewWebView(url: newTabPage))
+        compactTabsItem?.updateTabs()
     }
 
     func closeTab(tabIndex: Int) {

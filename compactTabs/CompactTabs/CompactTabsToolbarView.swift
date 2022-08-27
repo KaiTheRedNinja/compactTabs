@@ -9,10 +9,12 @@ import Cocoa
 
 class CompactTabsToolbarView: NSView {
 
+    var viewController: ViewController?
+
     var textField: NSTextField
     var reloadButton: NSButton?
-    var viewController: ViewController?
     var scrollView: NSScrollView?
+    var addTabButton: NSButton?
     var tabs: [TabView]
 
     override init(frame frameRect: NSRect) {
@@ -35,8 +37,10 @@ class CompactTabsToolbarView: NSView {
     }
 
     func addViews(rect: NSRect) {
+        // the frames of all the items don't actually have to be created yet. They're set when the window inevitably resizes.
+
         // init the address bar
-        textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 230, height: rect.height))
+        textField = NSTextField()
         if let window = self.window?.windowController as? MainWindowController {
             textField.stringValue = window.urlBarAddress
         } else {
@@ -48,21 +52,26 @@ class CompactTabsToolbarView: NSView {
         // init the reload button
         let reloadButton = NSButton(image: NSImage(named: "reload")!, target: self, action: #selector(reloadCurrentPage))
         reloadButton.isBordered = false
-        reloadButton.frame = CGRect(x: textField.frame.maxX - 20, y: 5, width: rect.height-10, height: rect.height-10)
         reloadButton.bezelStyle = .regularSquare
         self.reloadButton = reloadButton
         addSubview(reloadButton)
 
+        // init the add tab button
+        let addTabButton = NSButton(image: NSImage(named: "plus")!, target: self, action: #selector(addTab))
+        addTabButton.isBordered = false
+        addTabButton.bezelStyle = .regularSquare
+        self.addTabButton = addTabButton
+        addSubview(addTabButton)
+
         // init the scroll view
-        scrollView = NSScrollView(frame: NSRect(x: textField.frame.maxX+10, y: 2,
-                                                width: rect.width-textField.frame.maxX-10,
-                                                height: rect.height-4))
+        scrollView = NSScrollView()
         scrollView?.documentView = NSView()
         scrollView?.wantsLayer = true
         scrollView?.layer?.cornerRadius = 4 // just a small attention to detail so that tabs don't look abruptly cut off
         addSubview(scrollView!)
     }
 
+    // MARK: Tab actions
     /// Soft reload the tab bar by editing tabs
     func updateTabs() {
         guard let viewController = viewController else { return }
@@ -122,6 +131,26 @@ class CompactTabsToolbarView: NSView {
         updateTabFrames()
     }
 
+    func focusTab(sender: TabView) {
+        guard let toFocus = tabs.firstIndex(of: sender) else { return }
+        viewController?.focusTab(tabIndex: toFocus)
+    }
+
+    func closeTab(sender: TabView) {
+        guard let toClose = tabs.firstIndex(of: sender) else { return }
+        viewController?.closeTab(tabIndex: toClose)
+    }
+
+    @objc func reloadCurrentPage() {
+        viewController?.reloadTab()
+    }
+
+    @objc func addTab() {
+        viewController?.createTab()
+    }
+
+    // MARK: Resizing functions
+
     let defaultMainTabWidth = CGFloat(140.0)
     let minimumNonMainTabWidth = CGFloat(30.0)
     func updateTabFrames() {
@@ -158,25 +187,12 @@ class CompactTabsToolbarView: NSView {
                                                  height: frame.height-4)
     }
 
-    func focusTab(sender: TabView) {
-        guard let toFocus = tabs.firstIndex(of: sender) else { return }
-        viewController?.focusTab(tabIndex: toFocus)
-    }
-
-    func closeTab(sender: TabView) {
-        guard let toClose = tabs.firstIndex(of: sender) else { return }
-        viewController?.closeTab(tabIndex: toClose)
-    }
-
-    @objc func reloadCurrentPage() {
-        viewController?.reloadTab()
-    }
-
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
         reloadButton?.frame = CGRect(x: textField.frame.maxX - 20, y: 5, width: frame.height-10, height: frame.height-10)
+        addTabButton?.frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
         scrollView?.frame = NSRect(x: textField.frame.maxX+10, y: 2,
-                                   width: frame.width-textField.frame.maxX-10,
+                                   width: (addTabButton?.frame.minX ?? 0) - textField.frame.maxX - 20,
                                    height: frame.height-4)
         updateTabs()
     }
