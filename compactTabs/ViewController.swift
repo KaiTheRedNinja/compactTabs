@@ -49,6 +49,10 @@ class ViewController: NSViewController {
 
     func reloadTab() {
         if let webView = view.subviews.first as? WebPageView {
+            // because they're reloading, we should probably reload the favicon as well
+            if let url = webView.wkView?.url {
+                TabView.faviconCache.removeValue(forKey: url)
+            }
             webView.refresh()
         }
     }

@@ -27,8 +27,8 @@ My Technical Task for Orion
 13. Allow all tabs (both selected and non-selected) to expand in width if theres excess space
 14. Allow closing of tabs
 15. Allow middle click to close tab
+16. Implement favicons
 
 ## Todo:
 - Animations
 - Tab reordering
-- Favicons
