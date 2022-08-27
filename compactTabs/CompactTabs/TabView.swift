@@ -12,21 +12,24 @@ class TabView: NSView, Identifiable {
 
     var id = UUID()
 
-    var favicon: NSImageView
+    var favicon: NSButton
+    var faviconImage: NSImage
     var textView: NSTextField
 
     var compactTabsItem: CompactTabsToolbarView?
 
     override init(frame frameRect: NSRect) {
         textView = NSTextField()
-        favicon = NSImageView()
+        favicon = NSButton()
+        faviconImage = NSImage()
         super.init(frame: frameRect)
         addViews(rect: frameRect)
     }
 
     required init?(coder: NSCoder) {
         textView = NSTextField()
-        favicon = NSImageView()
+        favicon = NSButton()
+        faviconImage = NSImage()
         super.init(coder: coder)
     }
 
@@ -43,8 +46,14 @@ class TabView: NSView, Identifiable {
         layer?.borderWidth = 1
         layer?.borderColor = NSColor.gray.cgColor
 
-        favicon.image = NSImage(named: "unknown")!
+        faviconImage = NSImage(named: "unknown")!
+        favicon.image = faviconImage
+        favicon.isBordered = false
+        favicon.bezelStyle = .regularSquare
+        favicon.imageScaling = .scaleProportionallyDown
         favicon.frame = CGRect(x: 4, y: 4, width: rect.height-8, height: rect.height-8)
+        favicon.target = self
+        favicon.action = #selector(closeTab)
 
         textView.frame = CGRect(x: favicon.frame.maxX + 4, y: rect.minY-3, width: rect.width-favicon.frame.maxX-4, height: rect.height)
         textView.drawsBackground = false
@@ -55,11 +64,14 @@ class TabView: NSView, Identifiable {
         addSubview(textView)
         addSubview(favicon)
 
-        addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
+//        textView.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
+    }
+
+    @objc func closeTab() {
+        compactTabsItem?.closeTab(sender: self)
     }
 
     @objc func focusTab() {
-        print("Focusing")
         compactTabsItem?.focusTab(sender: self)
     }
 
@@ -74,21 +86,49 @@ class TabView: NSView, Identifiable {
     func updateWith(wkView: WKWebView?) {
         textView.stringValue = wkView?.title ?? (wkView?.url?.relativePath ?? "Unknown")
         print("Title: \(textView.stringValue)")
-        favicon = NSImageView(image: NSImage(named: "unknown")!)
+        favicon.image = NSImage(named: "unknown")!
     }
 
     override func resizeSubviews(withOldSize oldSize: NSSize) {
-        subviews = []
         if frame.width > 60 {
             favicon.frame = CGRect(x: 4, y: 4, width: frame.height-8, height: frame.height-8)
             textView.isHidden = false
             textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
         } else {
             favicon.frame = CGRect(x: 0, y: 4, width: frame.width, height: frame.height-8)
-            favicon.imageAlignment = .alignCenter
             textView.isHidden = true
         }
-        addSubview(textView)
-        addSubview(favicon)
+    }
+
+    // MARK: Mouse hover
+
+    private lazy var area = makeTrackingArea()
+
+    private var mouseHovering = false {
+        didSet {
+            if mouseHovering {
+                favicon.image = NSImage(named: "x")!
+            } else {
+                favicon.image = faviconImage
+            }
+        }
+    }
+
+    public override func updateTrackingAreas() {
+        removeTrackingArea(area)
+        area = makeTrackingArea()
+        addTrackingArea(area)
+    }
+
+    private func makeTrackingArea() -> NSTrackingArea {
+        return NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInKeyWindow], owner: self, userInfo: nil)
+    }
+
+    public override func mouseEntered(with event: NSEvent) {
+        mouseHovering = true
+    }
+
+    public override func mouseExited(with event: NSEvent) {
+        mouseHovering = false
     }
 }

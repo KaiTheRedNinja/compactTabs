@@ -141,9 +141,14 @@ class CompactTabsToolbarView: NSView {
                                                  height: frame.height-4)
     }
 
-    @objc func focusTab(sender: TabView) {
+    func focusTab(sender: TabView) {
         guard let toFocus = tabs.firstIndex(of: sender) else { return }
         viewController?.focusTab(tabIndex: toFocus)
+    }
+
+    func closeTab(sender: TabView) {
+        guard let toClose = tabs.firstIndex(of: sender) else { return }
+        viewController?.closeTab(tabIndex: toClose)
     }
 
     @objc func reloadCurrentPage() {

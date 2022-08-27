@@ -53,6 +53,10 @@ class ViewController: NSViewController {
         }
     }
 
+    func closeTab(tabIndex: Int) {
+        print("Closing tab \(tabIndex)")
+    }
+
     // helper function to focus a specific tab index
     var focusedTab = 0
     func focusTab(tabIndex: Int, update: Bool = true) {
