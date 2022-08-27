@@ -74,7 +74,6 @@ class CompactTabsToolbarView: NSView {
     // MARK: Tab actions
     /// Soft reload the tab bar by editing tabs
     func updateTabs() {
-        var newTabs: [TabView] = []
         guard let viewController = viewController else { return }
         // get the number of tabs there are, creating and removing tabs as needed
         if tabs.count < viewController.tabs.count {
@@ -88,7 +87,7 @@ class CompactTabsToolbarView: NSView {
                 tabView.compactTabsItem = self
 
                 tabs.append(tabView)
-                newTabs.append(tabView)
+                scrollView?.documentView?.addSubview(tabView)
                 tabView.updateWith(wkView: tab.wkView)
             }
         } else if tabs.count > viewController.tabs.count {
@@ -109,9 +108,6 @@ class CompactTabsToolbarView: NSView {
             tabView.updateWith(wkView: viewController.tabs[index].wkView)
         }
 
-        for newTab in newTabs {
-            scrollView?.documentView?.addSubview(newTab)
-        }
         updateTabFrames()
     }
 
@@ -178,11 +174,9 @@ class CompactTabsToolbarView: NSView {
         for (index, tab) in tabs.enumerated() {
             print("Updating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
             let distance = index == 0 ? -10 : tabs[index-1].frame.maxX
-            let oldTabSize = tab.frame
             tab.frame = CGRect(x: distance + 10, y: 0,
                                width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
                                height: frame.height-4)
-            tab.resizeSubviews(withOldSize: CGSize(width: oldTabSize.width, height: oldTabSize.height))
             if mainTabIndex == index {
                 tab.becomeMain()
             } else {
