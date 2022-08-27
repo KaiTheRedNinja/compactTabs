@@ -74,24 +74,6 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         }
     }
 
-    func goLeftOneTab() {
-        if let contentViewController = contentViewController as? ViewController {
-            print("Current tab index: \(contentViewController.focusedTab)")
-            guard contentViewController.focusedTab - 1 >= 0 else { return }
-            print("Going left one tab")
-            contentViewController.focusTab(tabIndex: contentViewController.focusedTab - 1)
-        }
-    }
-
-    func goRightOneTab() {
-        if let contentViewController = contentViewController as? ViewController {
-            print("Current tab index: \(contentViewController.focusedTab)")
-            guard contentViewController.focusedTab + 1 < contentViewController.tabs.count else { return }
-            print("Going right one tab")
-            contentViewController.focusTab(tabIndex: contentViewController.focusedTab + 1)
-        }
-    }
-
     func focusTab(index: Int) {
         if let contentViewController = contentViewController as? ViewController {
             guard index < contentViewController.tabs.count && index >= 0 else { return }
@@ -118,6 +100,10 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
 extension MainWindowController: NSWindowDelegate {
     func windowDidResize(_ notification: Notification) {
+        resizeWindow()
+    }
+
+    func resizeWindow() {
         print("Resized to \(window?.frame.width ?? 0)")
         // resize the tabs toolbar item
 

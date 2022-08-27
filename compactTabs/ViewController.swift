@@ -70,6 +70,7 @@ class ViewController: NSViewController {
         } else {
             print("a background tab navigated to a new page")
         }
+        mainWindow?.resizeWindow()
     }
 
     func loadPage(address: String) {

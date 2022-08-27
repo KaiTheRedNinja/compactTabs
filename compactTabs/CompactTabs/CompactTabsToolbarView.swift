@@ -86,19 +86,6 @@ class CompactTabsToolbarView: NSView {
         viewController?.focusTab(tabIndex: toFocus)
     }
 
-    @objc func goLeft() {
-        if let controller = self.window?.windowController as? MainWindowController {
-            controller.goLeftOneTab()
-        }
-    }
-
-    @objc func goRight() {
-        if let controller = self.window?.windowController as? MainWindowController {
-            print("Changing tab")
-            controller.goRightOneTab()
-        }
-    }
-
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
         updateTabFrames()
