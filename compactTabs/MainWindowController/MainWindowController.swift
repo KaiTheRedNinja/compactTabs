@@ -9,7 +9,7 @@
 
 import Cocoa
 
-let animationDuration = 0.4
+let animationDuration = 0.3
 class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
     var compactTabsItem: CompactTabsToolbarView?
@@ -138,5 +138,10 @@ extension MainWindowController: NSWindowDelegate {
             space += item.maxSize.width
         }
         compactTabsItem?.frame = NSRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - space, height: 25)
+    }
+
+    func reloadTabs() {
+        print("Reloading tabs")
+        compactTabsItem?.updateTabs()
     }
 }

@@ -123,6 +123,7 @@ class ViewController: NSViewController {
             print("a background tab navigated to a new page")
         }
         mainWindow?.updateView()
+        mainWindow?.reloadTabs()
     }
 
     /// A function that loads the address as a URL or as a search query depending on if it contains the needed characters.
@@ -151,6 +152,11 @@ class ViewController: NSViewController {
         } else if let webPageView = view.subviews.first as? WebPageView {
             webPageView.loadPage(address: url.debugDescription)
         }
+    }
+
+    /// Reload tab views
+    func reloadTabs() {
+        mainWindow?.reloadTabs()
     }
 
     /// Helper function to create a new web view and set the frame
