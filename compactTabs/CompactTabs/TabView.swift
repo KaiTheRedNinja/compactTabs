@@ -130,9 +130,6 @@ class TabView: NSView, Identifiable {
 
         // if the tab is in expanded mode
         if frame.width > 60 {
-            // The textview does not need animation, so just set its frame
-            textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
-
             // if the frame just only got expanded from compact mode, animate the changes
             if oldSize.width <= 60 {
                 NSAnimationContext.runAnimationGroup({ context in
@@ -143,6 +140,8 @@ class TabView: NSView, Identifiable {
                     origin.x -= favicon.frame.minX - 4
 
                     favicon.animator().frame.origin = origin
+                    textView.animator().frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3,
+                                                       width: frame.width-favicon.frame.maxX-4, height: frame.height)
                     textView.animator().alphaValue = 1
                 }) {
                     // In case the position the favicon should be at has changed, just set it when the animation has ended.
@@ -181,9 +180,17 @@ class TabView: NSView, Identifiable {
                         self.favicon.frame = CGRect(x: (self.frame.width - (self.frame.height-8))/2, y: 4,
                                                     width: self.frame.height-7, height: self.frame.height-8)
                     }
+                    self.textView.frame = CGRect(x: self.favicon.frame.maxX + 4,
+                                                 y: self.frame.minY-3,
+                                                 width: self.frame.width-self.favicon.frame.maxX-4,
+                                                 height: self.frame.height)
                 }
             } else { // no animation needed
                 favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
+                textView.frame = CGRect(x: favicon.frame.maxX + 4,
+                                        y: frame.minY-3,
+                                        width: frame.width-favicon.frame.maxX-4,
+                                        height: frame.height)
                 textView.alphaValue = 0
             }
         }
