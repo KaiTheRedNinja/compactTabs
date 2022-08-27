@@ -40,6 +40,8 @@ class TabView: NSView, Identifiable {
     }
 
     func addViews(rect: NSRect) {
+        self.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
+
         wantsLayer = true
 //        layer?.backgroundColor = NSColor.gray.cgColor
         layer?.cornerRadius = 4
@@ -51,7 +53,7 @@ class TabView: NSView, Identifiable {
         favicon.isBordered = false
         favicon.bezelStyle = .regularSquare
         favicon.imageScaling = .scaleProportionallyDown
-        favicon.frame = CGRect(x: 4, y: 4, width: rect.height-8, height: rect.height-8)
+        favicon.frame = CGRect(x: 4, y: 4, width: rect.height-7, height: rect.height-8)
         favicon.target = self
         favicon.action = #selector(closeTab)
 
@@ -63,8 +65,6 @@ class TabView: NSView, Identifiable {
         textView.isEditable = false
         addSubview(textView)
         addSubview(favicon)
-
-        textView.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
     }
 
     @objc func closeTab() {
@@ -72,7 +72,11 @@ class TabView: NSView, Identifiable {
     }
 
     @objc func focusTab() {
-        compactTabsItem?.focusTab(sender: self)
+        if mouseHovering {
+            closeTab()
+        } else {
+            compactTabsItem?.focusTab(sender: self)
+        }
     }
 
     func becomeMain() {
@@ -94,9 +98,10 @@ class TabView: NSView, Identifiable {
             textView.isHidden = false
             textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
         } else {
-            favicon.frame = CGRect(x: 0, y: 4, width: frame.width, height: frame.height-8)
+            favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
             textView.isHidden = true
         }
+        updateTrackingAreas()
     }
 
     // MARK: Mouse hover
@@ -120,7 +125,7 @@ class TabView: NSView, Identifiable {
     }
 
     private func makeTrackingArea() -> NSTrackingArea {
-        return NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInKeyWindow], owner: self, userInfo: nil)
+        return NSTrackingArea(rect: favicon.frame, options: [.mouseEnteredAndExited, .activeInKeyWindow], owner: self, userInfo: nil)
     }
 
     public override func mouseEntered(with event: NSEvent) {

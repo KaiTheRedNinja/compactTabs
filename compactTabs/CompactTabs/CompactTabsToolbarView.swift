@@ -101,8 +101,6 @@ class CompactTabsToolbarView: NSView {
         updateTabFrames()
     }
 
-    let mainTabWidth = CGFloat(140.0)
-
     /// Completely reload the tab bar by deleting all tabs and reloading
     func hardUpdateTabs() {
         // load the web view
@@ -124,11 +122,24 @@ class CompactTabsToolbarView: NSView {
         updateTabFrames()
     }
 
+    let defaultMainTabWidth = CGFloat(140.0)
+    let minimumNonMainTabWidth = CGFloat(30.0)
     func updateTabFrames() {
-        guard let mainTabIndex = viewController?.focusedTab else { return }
-        let spaceForTabs = frame.width - textField.frame.maxX - 10
-        let spaceForNonMainTabs = spaceForTabs - mainTabWidth
-        let nonMainTabWidth = max((spaceForNonMainTabs/CGFloat(tabs.count-1)) - 10, 20)
+        guard let mainTabIndex = viewController?.focusedTab, let scrollView = scrollView else { return }
+        var mainTabWidth = defaultMainTabWidth
+        var nonMainTabWidth = minimumNonMainTabWidth
+
+        // check if theres enough space for everything to be full width
+        if (mainTabWidth + 10) * CGFloat(tabs.count) - 10 <= scrollView.frame.width {
+            // resize everything to fit the view
+            mainTabWidth = (scrollView.frame.width+10) / CGFloat(tabs.count) - 10
+            nonMainTabWidth = mainTabWidth
+        } else {
+            // the main tab must be 140 wide, so constrain the non main tabs
+            let availableSpace = scrollView.frame.width-mainTabWidth
+            nonMainTabWidth = max((availableSpace / CGFloat(tabs.count-1)) - 10,
+                                  minimumNonMainTabWidth)
+        }
 
         for (index, tab) in tabs.enumerated() {
             let distance = index == 0 ? -10 : tabs[index-1].frame.maxX
@@ -142,7 +153,7 @@ class CompactTabsToolbarView: NSView {
             }
         }
 
-        scrollView?.documentView?.frame = NSRect(x: 0, y: 0,
+        scrollView.documentView?.frame = NSRect(x: 0, y: 0,
                                                  width: (tabs.last?.frame.maxX ?? 0) - (tabs.first?.frame.minX ?? 0),
                                                  height: frame.height-4)
     }
