@@ -122,7 +122,7 @@ class TabView: NSView, Identifiable {
             textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
 
             if oldSize.width <= 60 {
-                print("Expanding view for \(textView.stringValue)")
+//                print("Expanding view for \(textView.stringValue)")
                 // NSView move animation
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = 0.2
@@ -143,7 +143,7 @@ class TabView: NSView, Identifiable {
                     }
                 }
             } else {
-                print("Updating expanded view for \(textView.stringValue)")
+//                print("Updating expanded view for \(textView.stringValue)")
                 textView.alphaValue = 1
                 favicon.frame = CGRect(x: 4, y: 4, width: frame.height-8, height: frame.height-8)
                 textView.frame = CGRect(x: favicon.frame.maxX + 4,
@@ -153,7 +153,7 @@ class TabView: NSView, Identifiable {
             }
         } else {
             if oldSize.width > 60 {
-                print("Contracting view for \(textView.stringValue)")
+//                print("Contracting view for \(textView.stringValue)")
                 // NSView move animation
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = 0.2
@@ -171,7 +171,7 @@ class TabView: NSView, Identifiable {
                     }
                 }
             } else {
-                print("Updating contracted view for \(textView.stringValue)")
+//                print("Updating contracted view for \(textView.stringValue)")
                 favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
                 textView.alphaValue = 0
             }

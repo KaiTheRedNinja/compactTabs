@@ -108,7 +108,7 @@ class CompactTabsToolbarView: NSView {
             tabView.updateWith(wkView: viewController.tabs[index].wkView)
         }
 
-        updateTabFrames()
+        updateTabFrames(animated: true)
     }
 
     /// Completely reload the tab bar by deleting all tabs and reloading
@@ -129,7 +129,7 @@ class CompactTabsToolbarView: NSView {
             tabView.updateWith(wkView: tab.wkView)
             scrollView?.documentView?.addSubview(tabView)
         }
-        updateTabFrames()
+        updateTabFrames(animated: true)
     }
 
     func focusTab(sender: TabView) {
@@ -154,7 +154,7 @@ class CompactTabsToolbarView: NSView {
 
     let defaultMainTabWidth = CGFloat(140.0)
     let minimumNonMainTabWidth = CGFloat(30.0)
-    func updateTabFrames() {
+    func updateTabFrames(animated: Bool = false) {
         guard let mainTabIndex = viewController?.focusedTab, let scrollView = scrollView else { return }
         var mainTabWidth = defaultMainTabWidth
         var nonMainTabWidth = minimumNonMainTabWidth
@@ -173,15 +173,22 @@ class CompactTabsToolbarView: NSView {
 
         var distance = CGFloat(-10)
         for (index, tab) in tabs.enumerated() {
-            print("Updating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
-            NSAnimationContext.runAnimationGroup({ context in
-                context.duration = 0.2
+            if animated {
+                print("Animating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = 0.2
 
-                // Change the width
-                tab.animator().frame = CGRect(x: distance + 10, y: 0,
+                    // Change the width
+                    tab.animator().frame = CGRect(x: distance + 10, y: 0,
+                                                  width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
+                                                  height: frame.height-4)
+                })
+            } else {
+                print("Updating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
+                tab.frame = CGRect(x: distance + 10, y: 0,
                                               width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
                                               height: frame.height-4)
-            })
+            }
             distance = distance + 10 + (index == mainTabIndex ? mainTabWidth : nonMainTabWidth)
             if mainTabIndex == index {
                 tab.becomeMain()
@@ -191,7 +198,7 @@ class CompactTabsToolbarView: NSView {
         }
 
         scrollView.documentView?.frame = NSRect(x: 0, y: 0,
-                                                 width: distance + 10,
+                                                 width: distance,
                                                  height: frame.height-4)
     }
 
@@ -202,7 +209,7 @@ class CompactTabsToolbarView: NSView {
         scrollView?.frame = NSRect(x: textField.frame.maxX+10, y: 2,
                                    width: (addTabButton?.frame.minX ?? 0) - textField.frame.maxX - 20,
                                    height: frame.height-4)
-        updateTabs()
+        updateTabFrames(animated: false)
     }
 }
 
