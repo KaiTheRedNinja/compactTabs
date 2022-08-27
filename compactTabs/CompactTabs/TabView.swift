@@ -46,7 +46,7 @@ class TabView: NSView, Identifiable {
         favicon.image = NSImage(named: "unknown")!
         favicon.frame = CGRect(x: 4, y: 4, width: rect.height-8, height: rect.height-8)
 
-        textView.frame = CGRect(x: favicon.frame.maxX + 4, y: rect.minY-5, width: rect.width-favicon.frame.maxX-4, height: rect.height)
+        textView.frame = CGRect(x: favicon.frame.maxX + 4, y: rect.minY-3, width: rect.width-favicon.frame.maxX-4, height: rect.height)
         textView.drawsBackground = false
         textView.isBezeled = false
         textView.stringValue = "IDK really"
@@ -81,7 +81,7 @@ class TabView: NSView, Identifiable {
         if frame.width > 60 {
             favicon.frame = CGRect(x: 4, y: 4, width: frame.height-8, height: frame.height-8)
             textView.isHidden = false
-            textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-5, width: frame.width-favicon.frame.maxX-4, height: frame.height)
+            textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
         } else {
             favicon.frame = CGRect(x: 0, y: 4, width: frame.width, height: frame.height-8)
             favicon.imageAlignment = .alignCenter
