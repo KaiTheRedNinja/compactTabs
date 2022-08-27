@@ -117,13 +117,12 @@ class TabView: NSView, Identifiable {
         }
     }
 
-    var isResizing = false
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         if frame.width > 60 {
             textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
 
-            if oldSize.width >= 60 {
-                print("Animating to full")
+            if oldSize.width <= 60 {
+                print("View \(textView.stringValue) expanding to full")
                 // NSView move animation
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = 0.2
@@ -135,7 +134,6 @@ class TabView: NSView, Identifiable {
                     favicon.animator().frame.origin = origin
                     textView.animator().alphaValue = 1
                 }) {
-                    print("Finished full")
                     self.favicon.frame = CGRect(x: 4, y: 4, width: self.frame.height-8, height: self.frame.height-8)
                     self.textView.frame = CGRect(x: self.favicon.frame.maxX + 4,
                                                  y: self.frame.minY-3,
@@ -143,10 +141,17 @@ class TabView: NSView, Identifiable {
                                                  height: self.frame.height)
                 }
             } else {
+                print("Updating View \(textView.stringValue), already expanded to full")
                 textView.alphaValue = 1
+                favicon.frame = CGRect(x: 4, y: 4, width: frame.height-8, height: frame.height-8)
+                textView.frame = CGRect(x: favicon.frame.maxX + 4,
+                                             y: frame.minY-3,
+                                             width: frame.width-favicon.frame.maxX-4,
+                                             height: frame.height)
             }
         } else {
             if oldSize.width > 60 {
+                print("View \(textView.stringValue) contracting")
                 // NSView move animation
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = 0.2
@@ -157,8 +162,12 @@ class TabView: NSView, Identifiable {
 
                     favicon.animator().frame.origin = origin
                     textView.animator().alphaValue = 0
-                })
+                }) {
+                    self.favicon.frame = CGRect(x: (self.frame.width - (self.frame.height-8))/2, y: 4,
+                                                width: self.frame.height-7, height: self.frame.height-8)
+                }
             } else {
+                print("Updating View \(textView.stringValue), already contracted")
                 favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
                 textView.alphaValue = 0
             }
