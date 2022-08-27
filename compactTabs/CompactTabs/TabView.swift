@@ -39,17 +39,10 @@ class TabView: NSView, Identifiable {
         super.init(coder: coder)
     }
 
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-
-        // Drawing code here.
-    }
-
     func addViews(rect: NSRect) {
         self.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
 
         wantsLayer = true
-//        layer?.backgroundColor = NSColor.gray.cgColor
         layer?.cornerRadius = 4
         layer?.borderWidth = 1
         layer?.borderColor = NSColor.gray.cgColor
@@ -73,6 +66,7 @@ class TabView: NSView, Identifiable {
         addSubview(favicon)
     }
 
+    // MARK: Tab actions
     @objc func closeTab() {
         compactTabsItem?.closeTab(sender: self)
     }
@@ -85,6 +79,7 @@ class TabView: NSView, Identifiable {
         }
     }
 
+    // detect middle click
     override func otherMouseDown(with: NSEvent) {
         if NSEvent.pressedMouseButtons == 4 { // middle click
             closeTab()
@@ -99,6 +94,10 @@ class TabView: NSView, Identifiable {
         layer?.backgroundColor = .none
     }
 
+    /// Update the tab view's text and favicon. The favicon is cached to avoid repeated fetching.
+    /// - Parameters:
+    ///   - webPageView: The ``WebPageView`` to load the title and favicon of
+    ///   - attempt: How many attempts have been made before.
     func updateWith(webPageView: WebPageView?, attempt: Double = 0) {
         self.ascociatedWebPageView = webPageView
         let wkView = webPageView?.wkView
@@ -110,6 +109,8 @@ class TabView: NSView, Identifiable {
                 self.updateWith(webPageView: webPageView, attempt: attempt + 1)
             })
         }
+
+        // Load the favicon from cache, or fetch and cache it if unavailable.
         if let url = wkView?.url, let cachedIcon = TabView.faviconCache[url] {
             faviconImage = cachedIcon
             favicon.image = faviconImage
@@ -122,14 +123,18 @@ class TabView: NSView, Identifiable {
         }
     }
 
+    /// Resize the favicon and title
+    /// - Parameter oldSize: The old size of the view
     override func resizeSubviews(withOldSize oldSize: NSSize) {
-        guard !willBeDeleted else { return }
+        guard !willBeDeleted else { return } // don't update if the tab is about to be deleted
+
+        // if the tab is in expanded mode
         if frame.width > 60 {
+            // The textview does not need animation, so just set its frame
             textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
 
+            // if the frame just only got expanded from compact mode, animate the changes
             if oldSize.width <= 60 {
-//                print("Expanding view for \(textView.stringValue)")
-                // NSView move animation
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = 0.2
 
@@ -140,6 +145,7 @@ class TabView: NSView, Identifiable {
                     favicon.animator().frame.origin = origin
                     textView.animator().alphaValue = 1
                 }) {
+                    // In case the position the favicon should be at has changed, just set it when the animation has ended.
                     if self.frame.width > 60 {
                         self.favicon.frame = CGRect(x: 4, y: 4, width: self.frame.height-8, height: self.frame.height-8)
                         self.textView.frame = CGRect(x: self.favicon.frame.maxX + 4,
@@ -148,8 +154,7 @@ class TabView: NSView, Identifiable {
                                                      height: self.frame.height)
                     }
                 }
-            } else {
-//                print("Updating expanded view for \(textView.stringValue)")
+            } else { // no animation needed
                 textView.alphaValue = 1
                 favicon.frame = CGRect(x: 4, y: 4, width: frame.height-8, height: frame.height-8)
                 textView.frame = CGRect(x: favicon.frame.maxX + 4,
@@ -157,10 +162,11 @@ class TabView: NSView, Identifiable {
                                              width: frame.width-favicon.frame.maxX-4,
                                              height: frame.height)
             }
+
+        // if the tab is in compact mode
         } else {
+            // if the frame just only got compacted from expanded mode, animate the changes
             if oldSize.width > 60 {
-//                print("Contracting view for \(textView.stringValue)")
-                // NSView move animation
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = 0.2
 
@@ -176,8 +182,7 @@ class TabView: NSView, Identifiable {
                                                     width: self.frame.height-7, height: self.frame.height-8)
                     }
                 }
-            } else {
-//                print("Updating contracted view for \(textView.stringValue)")
+            } else { // no animation needed
                 favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
                 textView.alphaValue = 0
             }
@@ -189,6 +194,7 @@ class TabView: NSView, Identifiable {
 
     private lazy var area = makeTrackingArea()
 
+    // Used to toggle between the close tab image and the favicon image
     private var mouseHovering = false {
         didSet {
             if mouseHovering {
@@ -218,7 +224,11 @@ class TabView: NSView, Identifiable {
     }
 }
 
-// This avoids the very odd "unknown hint identifier 'kCGImageSourceTypeIdentifierHint:dyn.age8u' -- ignoring..." error
+/// A function to get the favicon for a certain URL and return it as an NSImage. If no favicon could be found, it returns ``TabView.unknownFavicon``.
+/// - Parameters:
+///   - url: The URL to get the favicon for
+///   - size: The size of the favicon in pixels. 32 by default.
+/// - Returns: An NSImage containing the favicon
 func faviconFor(url: URL?, size: Int = 32) -> NSImage {
     guard let sourceURL = url else { return TabView.unknownFavicon }
     guard let faviconUrl = URL(string: "https://www.google.com/s2/favicons?sz=\(size)&domain=\(sourceURL.debugDescription)")

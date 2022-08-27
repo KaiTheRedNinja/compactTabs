@@ -30,12 +30,6 @@ class CompactTabsToolbarView: NSView {
         super.init(coder: coder)
     }
 
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-
-        // Drawing code here.
-    }
-
     func addViews(rect: NSRect) {
         // the frames of all the items don't actually have to be created yet. They're set when the window inevitably resizes.
 
@@ -72,13 +66,15 @@ class CompactTabsToolbarView: NSView {
     }
 
     // MARK: Tab actions
-    /// Soft reload the tab bar by editing tabs
+    /// Soft reload the tab bar by adding new tabs and marking removed ones as to be removed
     func updateTabs() {
         guard let viewController = viewController else { return }
+
         // get the number of tabs there are, creating and removing tabs as needed
         if tabs.count < viewController.tabs.count {
             print("Creating missing tabs")
             // missing tabs, just create the remaining tabs
+            // Due to the way the code is implemented, tabs can only be created as the last item.
             let originalTabCount = tabs.count
             for (tabIndex, tab) in viewController.tabs.enumerated() {
                 if tabIndex < originalTabCount { continue }
@@ -95,17 +91,16 @@ class CompactTabsToolbarView: NSView {
             // too many tabs, delete extra tabs
             var deletedTabs = 0
             for (tabIndex, tab) in tabs.enumerated() {
+                // Mark the extra tab as will be deleted. This view will be animated out and removed in the updateTabFrames function.
                 if let webPage = tab.ascociatedWebPageView, !viewController.tabs.contains(webPage) {
                     print("Tab \(tab.textView.stringValue) to be removed/")
                     tab.willBeDeleted = true
                     deletedTabs += 1
-                } else {
-                    tab.updateWith(webPageView: viewController.tabs[tabIndex-deletedTabs])
                 }
             }
         }
 
-        // update the tab body
+        // update the tab body. Skip tabs that are marked as will be deleted.
         var deletedTabs = 0
         for (index, tabView) in tabs.enumerated() {
             if !tabView.willBeDeleted {
@@ -115,9 +110,11 @@ class CompactTabsToolbarView: NSView {
             }
         }
 
+        // most of the time if the tabs' frames are animated, its due to a tab being added or removed.
         updateTabFrames(animated: true)
     }
 
+    // MARK: View Controller Tab Actions
     func focusTab(sender: TabView) {
         guard let toFocus = tabs.firstIndex(of: sender) else { return }
         viewController?.focusTab(tabIndex: toFocus)
@@ -140,11 +137,13 @@ class CompactTabsToolbarView: NSView {
 
     let defaultMainTabWidth = CGFloat(140.0)
     let minimumNonMainTabWidth = CGFloat(30.0)
+    /// Update the frames of the ``TabView``s
+    /// - Parameter animated: If the frames should be animated or not
     func updateTabFrames(animated: Bool = false) {
         guard let mainTabIndex = viewController?.focusedTab, let scrollView = scrollView else { return }
         var mainTabWidth = defaultMainTabWidth
         var nonMainTabWidth = minimumNonMainTabWidth
-        let numberOfRealTabs = tabs.filter({ !$0.willBeDeleted }).count
+        let numberOfRealTabs = tabs.filter({ !$0.willBeDeleted }).count // only "real" (not to be deleted) tabs count towards the width by the end of the animation
 
         // check if theres enough space for everything to be full width
         if (mainTabWidth + 10) * CGFloat(numberOfRealTabs) - 10 <= scrollView.frame.width {
@@ -158,10 +157,12 @@ class CompactTabsToolbarView: NSView {
                                   minimumNonMainTabWidth)
         }
 
-        var distance = CGFloat(-10)
+        var distance = CGFloat(-10) // To know where to place the tab
         var index = 0
         for tab in tabs {
-            var newWidth = tab.willBeDeleted ? -10 : (index == mainTabIndex ? mainTabWidth : nonMainTabWidth)
+            // if the tab will be deleted, set its width to -10.
+            // Else, set it to the main tab width or non main tab width depending on if its the current tab.
+            let newWidth = tab.willBeDeleted ? -10 : (index == mainTabIndex ? mainTabWidth : nonMainTabWidth)
             if animated {
                 print("Animating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
                 NSAnimationContext.runAnimationGroup({ context in
@@ -172,12 +173,11 @@ class CompactTabsToolbarView: NSView {
                                                   width: newWidth,
                                                   height: frame.height-4)
                 }) {
+                    // if the tab is to be deleted, remove the tab from the superview and array when it has been animated out.
                     if tab.willBeDeleted {
                         print("Deleting tab")
                         tab.removeFromSuperview()
-                        self.tabs.removeAll(where: {
-                            $0 == tab
-                        })
+                        self.tabs.removeAll(where: { $0 == tab })
                     }
                 }
             } else {
@@ -189,23 +189,31 @@ class CompactTabsToolbarView: NSView {
                     tab.removeFromSuperview()
                 }
             }
+
+            // Increase the distance accordingly. The tab's maxX cannot be used because it might be being animated.
             distance = distance + 10 + newWidth
+
+            // Set the tab to main or not main depending if its the currently selected tab
             if mainTabIndex == index {
                 tab.becomeMain()
             } else {
                 tab.resignMain()
             }
 
+            // If the tab is to be deleted, don't count it because it technically doesn't exist.
             if !tab.willBeDeleted {
                 index += 1
             }
         }
 
+        // Set the scroll view's document view to be the total tabs width
         scrollView.documentView?.frame = NSRect(x: 0, y: 0,
                                                  width: distance,
                                                  height: frame.height-4)
     }
 
+    /// Resize the text field, reload button, add tab button and tabs button to fit a new size.
+    /// - Parameter oldSize: The old size of the view
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
         reloadButton?.frame = CGRect(x: textField.frame.maxX - 20, y: 5, width: frame.height-10, height: frame.height-10)
@@ -218,6 +226,9 @@ class CompactTabsToolbarView: NSView {
 }
 
 extension CompactTabsToolbarView: NSTextFieldDelegate {
+
+    /// Act on the text in the address bar when editing finished.
+    /// - Parameter obj: A notification
     func controlTextDidEndEditing(_ obj: Notification) {
         // save the text
         if let controller = self.window?.windowController as? MainWindowController {

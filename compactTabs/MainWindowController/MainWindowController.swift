@@ -39,6 +39,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         super.init(coder: coder)
     }
 
+    /// Configure the custom toolbar
     func configToolbar() {
         if  let unwrappedWindow = self.window {
             let toolbar = NSToolbar(identifier: UUID().uuidString)
@@ -62,6 +63,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         return true
     }
 
+    // MARK: Toolbar Button Actions
     func backButtonPressed(_ sender: Any) {
         if let contentViewController = contentViewController as? ViewController {
             contentViewController.goBack()
@@ -74,6 +76,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         }
     }
 
+    // MARK: Tab and Navigation Functions
     func focusTab(index: Int) {
         if let contentViewController = contentViewController as? ViewController {
             guard index < contentViewController.tabs.count && index >= 0 else { return }
@@ -97,6 +100,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         }
     }
 
+    // MARK: Shortcut Detectors
     override func keyDown(with event: NSEvent) {
         if event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command {
             print(event.keyCode)
@@ -117,10 +121,11 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
 extension MainWindowController: NSWindowDelegate {
     func windowDidResize(_ notification: Notification) {
-        resizeWindow()
+        updateView()
     }
 
-    func resizeWindow() {
+    /// Update the compact tabs item based on how much space it can take up in the toolbar.
+    func updateView() {
         // resize the tabs toolbar item
 
         // get the space before and after the compact tabs item

@@ -30,6 +30,7 @@ extension MainWindowController: NSToolbarDelegate {
         case .compactTabsToolbarItem: // the compact tabs toolbar item
             let toolbarItem = NSToolbarItem(itemIdentifier: NSToolbarItem.Identifier.compactTabsToolbarItem)
 
+            // Init the custom view
             let view = CompactTabsToolbarView(frame: CGRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - 100, height: 25))
             view.autoresizingMask = [.width, .height]
             view.viewController = self.contentViewController as? ViewController
@@ -68,6 +69,8 @@ extension MainWindowController: NSToolbarDelegate {
             return NSToolbarItem(itemIdentifier: itemIdentifier)
         }
     }
+
+    // MARK: Back/Forward Buttons
 
     @objc
     func goBack() {
