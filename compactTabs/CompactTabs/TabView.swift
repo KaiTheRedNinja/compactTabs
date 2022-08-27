@@ -117,14 +117,51 @@ class TabView: NSView, Identifiable {
         }
     }
 
+    var isResizing = false
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         if frame.width > 60 {
-            favicon.frame = CGRect(x: 4, y: 4, width: frame.height-8, height: frame.height-8)
-            textView.isHidden = false
             textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3, width: frame.width-favicon.frame.maxX-4, height: frame.height)
+
+            if oldSize.width >= 60 {
+                print("Animating to full")
+                // NSView move animation
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = 0.2
+
+                    // Move the favicon to its new position
+                    var origin = favicon.frame.origin
+                    origin.x -= favicon.frame.minX - 4
+
+                    favicon.animator().frame.origin = origin
+                    textView.animator().alphaValue = 1
+                }) {
+                    print("Finished full")
+                    self.favicon.frame = CGRect(x: 4, y: 4, width: self.frame.height-8, height: self.frame.height-8)
+                    self.textView.frame = CGRect(x: self.favicon.frame.maxX + 4,
+                                                 y: self.frame.minY-3,
+                                                 width: self.frame.width-self.favicon.frame.maxX-4,
+                                                 height: self.frame.height)
+                }
+            } else {
+                textView.alphaValue = 1
+            }
         } else {
-            favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
-            textView.isHidden = true
+            if oldSize.width > 60 {
+                // NSView move animation
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = 0.2
+
+                    // Move the favicon to its new position
+                    var origin = favicon.frame.origin
+                    origin.x += (frame.width - (frame.height-8))/2 - 4
+
+                    favicon.animator().frame.origin = origin
+                    textView.animator().alphaValue = 0
+                })
+            } else {
+                favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
+                textView.alphaValue = 0
+            }
         }
         updateTrackingAreas()
     }
