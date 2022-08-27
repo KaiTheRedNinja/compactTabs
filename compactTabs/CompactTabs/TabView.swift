@@ -79,6 +79,12 @@ class TabView: NSView, Identifiable {
         }
     }
 
+    override func otherMouseDown(with: NSEvent) {
+        if NSEvent.pressedMouseButtons == 4 { // middle click
+            closeTab()
+        }
+    }
+
     func becomeMain() {
         layer?.backgroundColor = NSColor.gray.cgColor
     }
