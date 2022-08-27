@@ -89,6 +89,9 @@ class TabView: NSView, Identifiable {
 
     func updateWith(wkView: WKWebView?) {
         textView.stringValue = wkView?.title ?? (wkView?.url?.relativePath ?? "Unknown")
+        if textView.stringValue == "" {
+            textView.stringValue = "Loading"
+        }
         favicon.image = NSImage(named: "unknown")!
     }
 
