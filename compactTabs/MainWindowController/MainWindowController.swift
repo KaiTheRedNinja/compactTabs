@@ -104,7 +104,6 @@ extension MainWindowController: NSWindowDelegate {
     }
 
     func resizeWindow() {
-        print("Resized to \(window?.frame.width ?? 0)")
         // resize the tabs toolbar item
 
         // get the space before and after the compact tabs item

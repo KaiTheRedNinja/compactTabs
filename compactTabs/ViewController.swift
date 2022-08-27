@@ -69,10 +69,7 @@ class ViewController: NSViewController {
             } else {
                 print("Focusing tab \(tabIndex < focusedTab+1 ? focusedTab-1 : focusedTab)")
                 print("Tab index is before current: \(tabIndex < focusedTab+1)")
-                if tabIndex < focusedTab {
-                    focusTab(tabIndex: focusedTab-1)
-                }
-                compactTabsItem?.updateTabs()
+                focusTab(tabIndex: tabIndex < focusedTab ? focusedTab-1 : focusedTab)
             }
         }
         print("Closed tab \(tabIndex). \(tabs.count) left.")
