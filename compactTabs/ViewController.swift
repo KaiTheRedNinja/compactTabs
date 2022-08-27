@@ -47,6 +47,12 @@ class ViewController: NSViewController {
         }
     }
 
+    func reloadTab() {
+        if let webView = view.subviews.first as? WebPageView {
+            webView.refresh()
+        }
+    }
+
     // helper function to focus a specific tab index
     var focusedTab = 0
     func focusTab(tabIndex: Int, update: Bool = true) {

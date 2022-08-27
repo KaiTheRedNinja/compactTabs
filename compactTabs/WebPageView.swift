@@ -80,7 +80,7 @@ class WebPageView: NSView {
 
 extension WebPageView: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        print("Web view finished navigation")
+        print("Web view finished navigation to \(webView.url?.debugDescription ?? "")")
         self.viewController?.updateURLBar(toAddress: webView.url?.debugDescription ?? "", sender: self)
     }
 

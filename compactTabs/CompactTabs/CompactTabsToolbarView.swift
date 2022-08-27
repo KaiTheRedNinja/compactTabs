@@ -10,6 +10,7 @@ import Cocoa
 class CompactTabsToolbarView: NSView {
 
     var textField: NSTextField
+    var reloadButton: NSButton?
     var viewController: ViewController?
     var scrollView: NSScrollView?
     var tabs: [TabView]
@@ -43,6 +44,14 @@ class CompactTabsToolbarView: NSView {
         }
         textField.delegate = self
         addSubview(textField)
+
+        // init the reload button
+        let reloadButton = NSButton(image: NSImage(named: "reload")!, target: self, action: #selector(reloadCurrentPage))
+        reloadButton.isBordered = false
+        reloadButton.frame = CGRect(x: textField.frame.maxX - 20, y: 5, width: rect.height-10, height: rect.height-10)
+        reloadButton.bezelStyle = .regularSquare
+        self.reloadButton = reloadButton
+        addSubview(reloadButton)
 
         // init the scroll view
         scrollView = NSScrollView(frame: NSRect(x: textField.frame.maxX+10, y: 2,
@@ -137,8 +146,13 @@ class CompactTabsToolbarView: NSView {
         viewController?.focusTab(tabIndex: toFocus)
     }
 
+    @objc func reloadCurrentPage() {
+        viewController?.reloadTab()
+    }
+
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
+        reloadButton?.frame = CGRect(x: textField.frame.maxX - 20, y: 5, width: frame.height-10, height: frame.height-10)
         scrollView?.frame = NSRect(x: textField.frame.maxX+10, y: 2,
                                    width: frame.width-textField.frame.maxX-10,
                                    height: frame.height-4)
