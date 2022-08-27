@@ -63,7 +63,7 @@ class CompactTabsToolbarView: NSView {
         addSubview(scrollView!)
     }
 
-    // TODO: Don't recreate the tabs every time
+    /// Soft reload the tab bar by editing tabs
     func updateTabs() {
         guard let viewController = viewController else { return }
         // get the number of tabs there are, creating and removing tabs as needed
@@ -84,6 +84,13 @@ class CompactTabsToolbarView: NSView {
         } else if tabs.count > viewController.tabs.count {
             print("Deleting excess tabs")
             // too many tabs, delete extra tabs
+            for (tabIndex, tab) in tabs.enumerated() {
+                if tabIndex >= viewController.tabs.count {
+                    tab.removeFromSuperview()
+                } else {
+                    tab.updateWith(wkView: viewController.tabs[tabIndex].wkView)
+                }
+            }
             tabs = Array(tabs[0..<viewController.tabs.count])
         }
 
@@ -117,7 +124,6 @@ class CompactTabsToolbarView: NSView {
         updateTabFrames()
     }
 
-    /// Soft reload the tab bar by editing tabs
     func updateTabFrames() {
         guard let mainTabIndex = viewController?.focusedTab else { return }
         let spaceForTabs = frame.width - textField.frame.maxX - 10

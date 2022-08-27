@@ -64,7 +64,7 @@ class TabView: NSView, Identifiable {
         addSubview(textView)
         addSubview(favicon)
 
-//        textView.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
+        textView.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
     }
 
     @objc func closeTab() {
@@ -85,7 +85,6 @@ class TabView: NSView, Identifiable {
 
     func updateWith(wkView: WKWebView?) {
         textView.stringValue = wkView?.title ?? (wkView?.url?.relativePath ?? "Unknown")
-        print("Title: \(textView.stringValue)")
         favicon.image = NSImage(named: "unknown")!
     }
 

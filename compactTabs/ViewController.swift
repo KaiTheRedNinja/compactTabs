@@ -56,15 +56,26 @@ class ViewController: NSViewController {
     func closeTab(tabIndex: Int) {
         let reposition = tabIndex == focusedTab
         if tabs.count == 1 {
+            print("Last window closed")
             // the last tab was just closed, close the window
             self.mainWindow?.close()
         } else {
             // close the tab and focus the tab to the right
             view.subviews = [] // unfocus the current tab
             tabs.remove(at: tabIndex)
-            focusTab(tabIndex: tabIndex)
+            if reposition {
+                print("Repositioning")
+                focusTab(tabIndex: tabIndex)
+            } else {
+                print("Focusing tab \(tabIndex < focusedTab+1 ? focusedTab-1 : focusedTab)")
+                print("Tab index is before current: \(tabIndex < focusedTab+1)")
+                if tabIndex < focusedTab {
+                    focusTab(tabIndex: focusedTab-1)
+                }
+                compactTabsItem?.updateTabs()
+            }
         }
-        print("Closed tab \(tabIndex)")
+        print("Closed tab \(tabIndex). \(tabs.count) left.")
     }
 
     // helper function to focus a specific tab index
