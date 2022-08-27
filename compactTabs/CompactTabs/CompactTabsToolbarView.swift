@@ -166,7 +166,7 @@ class CompactTabsToolbarView: NSView {
             if animated {
                 print("Animating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
                 NSAnimationContext.runAnimationGroup({ context in
-                    context.duration = 0.2
+                    context.duration = animationDuration
 
                     // Change the width
                     tab.animator().frame = CGRect(x: distance + 10, y: 0,

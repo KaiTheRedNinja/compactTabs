@@ -133,7 +133,7 @@ class TabView: NSView, Identifiable {
             // if the frame just only got expanded from compact mode, animate the changes
             if oldSize.width <= 60 {
                 NSAnimationContext.runAnimationGroup({ context in
-                    context.duration = 0.2
+                    context.duration = animationDuration
 
                     // Move the favicon to its new position
                     var origin = favicon.frame.origin
@@ -167,7 +167,7 @@ class TabView: NSView, Identifiable {
             // if the frame just only got compacted from expanded mode, animate the changes
             if oldSize.width > 60 {
                 NSAnimationContext.runAnimationGroup({ context in
-                    context.duration = 0.2
+                    context.duration = animationDuration
 
                     // Move the favicon to its new position
                     var origin = favicon.frame.origin

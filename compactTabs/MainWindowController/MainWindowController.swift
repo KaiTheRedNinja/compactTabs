@@ -9,6 +9,7 @@
 
 import Cocoa
 
+let animationDuration = 0.4
 class MainWindowController: NSWindowController, NSToolbarItemValidation {
 
     var compactTabsItem: CompactTabsToolbarView?
