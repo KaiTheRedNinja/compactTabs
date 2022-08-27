@@ -63,7 +63,8 @@ class ViewController: NSViewController {
         compactTabsItem?.updateTabs()
     }
 
-    func closeTab(tabIndex: Int) {
+    func closeTab(tabIndex: Int? = nil) {
+        let tabIndex = tabIndex ?? focusedTab
         let reposition = tabIndex == focusedTab
         if tabs.count == 1 {
             print("Last window closed")

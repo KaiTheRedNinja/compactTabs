@@ -109,7 +109,7 @@ class TabView: NSView, Identifiable {
             faviconImage = cachedIcon
             favicon.image = faviconImage
         } else if let wkView = wkView, let url = wkView.url {
-            faviconImage = image(fromURL: URL(string: FavIcon(url.debugDescription)[.m]))
+            faviconImage = faviconFor(url: url)
             favicon.image = faviconImage
             TabView.faviconCache[url] = favicon.image
         } else {
@@ -162,28 +162,12 @@ class TabView: NSView, Identifiable {
     }
 }
 
-// This struct gets the favicon using a google API that massively simplifies things
-struct FavIcon {
-    enum Size: Int, CaseIterable {
-        case s = 16
-        case m = 32
-        case l = 64
-        case xl = 128
-        case xxl = 256
-        case xxxl = 512
-    }
-    private let domain: String
-    init(_ domain: String) { self.domain = domain }
-    subscript(_ size: Size) -> String {
-        "https://www.google.com/s2/favicons?sz=\(size.rawValue)&domain=\(domain)"
-    }
-}
-
-// Image loader modified from https://christiantietze.de/posts/2020/02/nsimage-unknown-hint-identifier/
 // This avoids the very odd "unknown hint identifier 'kCGImageSourceTypeIdentifierHint:dyn.age8u' -- ignoring..." error
-func image(fromURL url: URL?) -> NSImage {
-    guard let url = url else { return TabView.unknownFavicon }
-    guard let data = try? Data(contentsOf: url) else { return TabView.unknownFavicon }
+func faviconFor(url: URL?, size: Int = 32) -> NSImage {
+    guard let sourceURL = url else { return TabView.unknownFavicon }
+    guard let faviconUrl = URL(string: "https://www.google.com/s2/favicons?sz=\(size)&domain=\(sourceURL.debugDescription)")
+        else { return TabView.unknownFavicon }
+    guard let data = try? Data(contentsOf: faviconUrl) else { return TabView.unknownFavicon }
     guard let image = NSImage(data: data) else { return TabView.unknownFavicon }
     return image
 }

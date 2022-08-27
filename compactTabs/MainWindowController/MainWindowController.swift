@@ -96,6 +96,15 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
             compactTabsItem?.updateTabs()
         }
     }
+
+    override func keyDown(with event: NSEvent) {
+        if event.keyCode == 13 && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command { // cmd-w
+            print("Cmd-w pressed")
+            if let contentViewController = contentViewController as? ViewController {
+                contentViewController.closeTab()
+            }
+        }
+    }
 }
 
 extension MainWindowController: NSWindowDelegate {
