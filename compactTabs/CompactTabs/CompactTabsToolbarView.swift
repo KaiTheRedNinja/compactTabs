@@ -171,12 +171,18 @@ class CompactTabsToolbarView: NSView {
                                   minimumNonMainTabWidth)
         }
 
+        var distance = CGFloat(-10)
         for (index, tab) in tabs.enumerated() {
             print("Updating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
-            let distance = index == 0 ? -10 : tabs[index-1].frame.maxX
-            tab.frame = CGRect(x: distance + 10, y: 0,
-                               width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
-                               height: frame.height-4)
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.2
+
+                // Change the width
+                tab.animator().frame = CGRect(x: distance + 10, y: 0,
+                                              width: index == mainTabIndex ? mainTabWidth : nonMainTabWidth,
+                                              height: frame.height-4)
+            })
+            distance = distance + 10 + (index == mainTabIndex ? mainTabWidth : nonMainTabWidth)
             if mainTabIndex == index {
                 tab.becomeMain()
             } else {
@@ -185,7 +191,7 @@ class CompactTabsToolbarView: NSView {
         }
 
         scrollView.documentView?.frame = NSRect(x: 0, y: 0,
-                                                 width: (tabs.last?.frame.maxX ?? 0) - (tabs.first?.frame.minX ?? 0),
+                                                 width: distance + 10,
                                                  height: frame.height-4)
     }
 

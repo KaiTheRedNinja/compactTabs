@@ -28,7 +28,9 @@ My Technical Task for Orion
 14. Allow closing of tabs
 15. Allow middle click to close tab
 16. Implement favicons
+17. Implement animations for when tabs go from no title to with title
+18. Implement animations for when tabs resize (eg. when main tab changed, tab added or removed)
 
 ## Todo:
-- Animations
 - Tab reordering
+- Re-enable Toolbar Customisation
