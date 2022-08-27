@@ -46,7 +46,6 @@ class CompactTabsToolbarView: NSView {
 
     // TODO: Don't recreate the tabs every time
     func updateTabs() {
-        print("Updating tabs")
         guard let viewController = viewController else { return }
         tabs.forEach({ $0.removeFromSuperview() })
         tabs = []
@@ -71,7 +70,6 @@ class CompactTabsToolbarView: NSView {
         let spaceForTabs = frame.width - textField.frame.maxX - 10
         let spaceForNonMainTabs = spaceForTabs - mainTabWidth
         let nonMainTabWidth = (spaceForNonMainTabs/CGFloat(tabs.count-1)) - 10
-        print("non main width: \(nonMainTabWidth)")
 
         for (index, tab) in tabs.enumerated() {
             let distance = index == 0 ? textField.frame.maxX : tabs[index-1].frame.maxX
