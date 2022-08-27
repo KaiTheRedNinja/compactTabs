@@ -87,10 +87,14 @@ class TabView: NSView, Identifiable {
         layer?.backgroundColor = .none
     }
 
-    func updateWith(wkView: WKWebView?) {
+    func updateWith(wkView: WKWebView?, attempt: Double = 0) {
         textView.stringValue = wkView?.title ?? (wkView?.url?.relativePath ?? "Unknown")
         if textView.stringValue == "" {
             textView.stringValue = "Loading"
+            // keep on trying to see if the web view has loaded, larger delay between each attempt
+            DispatchQueue.main.asyncAfter(deadline: .now() + attempt, execute: {
+                self.updateWith(wkView: wkView, attempt: attempt + 1)
+            })
         }
         favicon.image = NSImage(named: "unknown")!
     }
