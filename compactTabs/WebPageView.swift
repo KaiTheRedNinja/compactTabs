@@ -83,4 +83,9 @@ extension WebPageView: WKNavigationDelegate {
         print("Web view finished navigation")
         self.viewController?.updateURLBar(toAddress: webView.url?.debugDescription ?? "", sender: self)
     }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        print("Web view failed navigation")
+        self.viewController?.updateURLBar(toAddress: webView.url?.debugDescription ?? "", sender: self)
+    }
 }

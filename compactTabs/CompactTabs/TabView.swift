@@ -72,8 +72,8 @@ class TabView: NSView, Identifiable {
         layer?.backgroundColor = .none
     }
 
-    func updateWith(wkView: WKWebView) {
-        textView.stringValue = wkView.title ?? (wkView.url?.relativePath ?? "Unknown")
+    func updateWith(wkView: WKWebView?) {
+        textView.stringValue = wkView?.title ?? (wkView?.url?.relativePath ?? "Unknown")
         favicon = NSImageView(image: NSImage(named: "unknown")!)
     }
 
@@ -83,7 +83,7 @@ class TabView: NSView, Identifiable {
             textView.isHidden = false
             textView.frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-5, width: frame.width-favicon.frame.maxX-4, height: frame.height)
         } else {
-            favicon.frame = CGRect(x: 0, y: 4, width: frame.width, height: frame.height-8)
+            favicon.frame = CGRect(x: 10, y: 4, width: frame.width, height: frame.height-8)
             favicon.imageAlignment = .alignCenter
             textView.isHidden = true
         }

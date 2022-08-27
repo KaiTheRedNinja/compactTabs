@@ -59,9 +59,7 @@ class CompactTabsToolbarView: NSView {
             }
 
             tabs.append(tabView)
-            if let wkView = tab.wkView {
-                tabView.updateWith(wkView: wkView)
-            }
+            tabView.updateWith(wkView: tab.wkView)
             addSubview(tabView)
         }
         updateTabFrames()
