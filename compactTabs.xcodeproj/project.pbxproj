@@ -14,6 +14,7 @@
 		932B192428B729370034093E /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192328B729370034093E /* MainWindowController.swift */; };
 		932B192B28B72F830034093E /* CompactTabsToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B192A28B72F830034093E /* CompactTabsToolbarView.swift */; };
 		935BCDC028B84BE00032960F /* WebPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935BCDBF28B84BE00032960F /* WebPageView.swift */; };
+		936A944928BBAA0500CA5952 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 936A944828BBAA0500CA5952 /* README.md */; };
 		936EDC3F28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936EDC3E28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift */; };
 		93A0059028B8F34300170541 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A0058F28B8F34200170541 /* TabView.swift */; };
 /* End PBXBuildFile section */
@@ -28,6 +29,7 @@
 		932B192328B729370034093E /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		932B192A28B72F830034093E /* CompactTabsToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactTabsToolbarView.swift; sourceTree = "<group>"; };
 		935BCDBF28B84BE00032960F /* WebPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPageView.swift; sourceTree = "<group>"; };
+		936A944828BBAA0500CA5952 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		936EDC3E28B79E5C00264165 /* MainWindowController+NSToolbarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainWindowController+NSToolbarDelegate.swift"; sourceTree = "<group>"; };
 		93A0058F28B8F34200170541 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -46,6 +48,7 @@
 		932B190828B726920034093E = {
 			isa = PBXGroup;
 			children = (
+				936A944828BBAA0500CA5952 /* README.md */,
 				932B191328B726920034093E /* compactTabs */,
 				932B191228B726920034093E /* Products */,
 			);
@@ -150,6 +153,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				936A944928BBAA0500CA5952 /* README.md in Resources */,
 				932B191928B726930034093E /* Assets.xcassets in Resources */,
 				932B191C28B726930034093E /* Main.storyboard in Resources */,
 			);
