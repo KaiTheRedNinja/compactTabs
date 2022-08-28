@@ -49,11 +49,7 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
             toolbar.autosavesConfiguration = true
             toolbar.displayMode = .default
 
-            // Center-pin the compact tabs toolbar item
-            toolbar.centeredItemIdentifier = .compactTabsToolbarItem
-
             // Hiding the title visibility in order to gain more toolbar space.
-            // Set this property to .visible or delete this line to get it back.
             unwrappedWindow.titleVisibility = .hidden
 
             unwrappedWindow.toolbar = toolbar
@@ -132,7 +128,7 @@ extension MainWindowController: NSWindowDelegate {
         // get the space before and after the compact tabs item
         // exclude flexible spaces, because they automatically expand
 
-        var space: CGFloat = 140.0
+        var space: CGFloat = 110.0
         for item in self.window?.toolbar?.items ?? [] {
             guard item.itemIdentifier != .flexibleSpace && item.itemIdentifier != .compactTabsToolbarItem else { continue }
             space += item.maxSize.width

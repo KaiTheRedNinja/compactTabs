@@ -79,7 +79,7 @@ class CompactTabsToolbarView: NSView {
             for (tabIndex, tab) in viewController.tabs.enumerated() {
                 if tabIndex < originalTabCount { continue }
                 let distance = tabs.last?.frame.maxX ?? 0
-                let tabView = TabView(frame: CGRect(x: distance + 10, y: 2, width: 70, height: frame.height-4))
+                let tabView = TabView(frame: CGRect(x: distance + 10, y: 2, width: 0, height: frame.height-4))
                 tabView.compactTabsItem = self
 
                 tabs.append(tabView)
@@ -90,7 +90,7 @@ class CompactTabsToolbarView: NSView {
             print("Deleting excess tabs")
             // too many tabs, delete extra tabs
             var deletedTabs = 0
-            for (tabIndex, tab) in tabs.enumerated() {
+            for tab in tabs {
                 // Mark the extra tab as will be deleted. This view will be animated out and removed in the updateTabFrames function.
                 if let webPage = tab.ascociatedWebPageView, !viewController.tabs.contains(webPage) {
                     print("Tab \(tab.textView.stringValue) to be removed/")
@@ -164,7 +164,6 @@ class CompactTabsToolbarView: NSView {
             // Else, set it to the main tab width or non main tab width depending on if its the current tab.
             let newWidth = tab.willBeDeleted ? -10 : (index == mainTabIndex ? mainTabWidth : nonMainTabWidth)
             if animated {
-                print("Animating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = animationDuration
 
@@ -181,7 +180,6 @@ class CompactTabsToolbarView: NSView {
                     }
                 }
             } else {
-                print("Updating frame for \(tab.textView.stringValue). Width: \(index == mainTabIndex ? mainTabWidth : nonMainTabWidth)")
                 tab.frame = CGRect(x: distance + 10, y: 0,
                                               width: newWidth,
                                               height: frame.height-4)

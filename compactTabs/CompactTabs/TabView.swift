@@ -56,7 +56,6 @@ class TabView: NSView, Identifiable {
         favicon.target = self
         favicon.action = #selector(closeTab)
 
-        textView.frame = CGRect(x: favicon.frame.maxX + 4, y: rect.minY-3, width: rect.width-favicon.frame.maxX-4, height: rect.height)
         textView.drawsBackground = false
         textView.isBezeled = false
         textView.stringValue = "IDK really"
@@ -64,6 +63,21 @@ class TabView: NSView, Identifiable {
         textView.isEditable = false
         addSubview(textView)
         addSubview(favicon)
+
+        // if the tab is in expanded mode
+        if rect.width > 60 {
+            favicon.frame = CGRect(x: 4, y: 4, width: rect.height-8, height: rect.height-8)
+            textView.frame = CGRect(x: rect.height-2, y: 0,
+                                    width: rect.width-rect.height+8-4, height: rect.height-3)
+            textView.alphaValue = 1
+        // if the tab is in compact mode
+        } else {
+            favicon.frame = CGRect(x: (rect.width - (rect.height-8))/2, y: 4, width: rect.height-7, height: rect.height-8)
+            textView.frame = CGRect(x: rect.height-2, y: 0,
+                                    width: rect.width-rect.height+8-4, height: rect.height-3)
+            textView.alphaValue = 0
+        }
+        updateTrackingAreas()
     }
 
     // MARK: Tab actions
@@ -128,6 +142,11 @@ class TabView: NSView, Identifiable {
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         guard !willBeDeleted else { return } // don't update if the tab is about to be deleted
 
+        let newTextViewFrame = CGRect(x: frame.height-2, y: 0,
+                                      width: frame.width-frame.height+8-4, height: frame.height-3)
+        print("New text frame: \(newTextViewFrame)")
+        print("Frame:          \(frame)")
+
         // if the tab is in expanded mode
         if frame.width > 60 {
             // if the frame just only got expanded from compact mode, animate the changes
@@ -140,26 +159,18 @@ class TabView: NSView, Identifiable {
                     origin.x -= favicon.frame.minX - 4
 
                     favicon.animator().frame.origin = origin
-                    textView.animator().frame = CGRect(x: favicon.frame.maxX + 4, y: frame.minY-3,
-                                                       width: frame.width-favicon.frame.maxX-4, height: frame.height)
+                    textView.animator().frame = newTextViewFrame
                     textView.animator().alphaValue = 1
                 }) {
                     // In case the position the favicon should be at has changed, just set it when the animation has ended.
                     if self.frame.width > 60 {
                         self.favicon.frame = CGRect(x: 4, y: 4, width: self.frame.height-8, height: self.frame.height-8)
-                        self.textView.frame = CGRect(x: self.favicon.frame.maxX + 4,
-                                                     y: self.frame.minY-3,
-                                                     width: self.frame.width-self.favicon.frame.maxX-4,
-                                                     height: self.frame.height)
                     }
                 }
             } else { // no animation needed
                 textView.alphaValue = 1
                 favicon.frame = CGRect(x: 4, y: 4, width: frame.height-8, height: frame.height-8)
-                textView.frame = CGRect(x: favicon.frame.maxX + 4,
-                                             y: frame.minY-3,
-                                             width: frame.width-favicon.frame.maxX-4,
-                                             height: frame.height)
+                textView.frame = newTextViewFrame
             }
 
         // if the tab is in compact mode
@@ -180,17 +191,11 @@ class TabView: NSView, Identifiable {
                         self.favicon.frame = CGRect(x: (self.frame.width - (self.frame.height-8))/2, y: 4,
                                                     width: self.frame.height-7, height: self.frame.height-8)
                     }
-                    self.textView.frame = CGRect(x: self.favicon.frame.maxX + 4,
-                                                 y: self.frame.minY-3,
-                                                 width: self.frame.width-self.favicon.frame.maxX-4,
-                                                 height: self.frame.height)
+                    self.textView.frame = newTextViewFrame
                 }
             } else { // no animation needed
                 favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
-                textView.frame = CGRect(x: favicon.frame.maxX + 4,
-                                        y: frame.minY-3,
-                                        width: frame.width-favicon.frame.maxX-4,
-                                        height: frame.height)
+                textView.frame = newTextViewFrame
                 textView.alphaValue = 0
             }
         }
