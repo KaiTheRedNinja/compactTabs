@@ -168,15 +168,17 @@ class CompactTabsToolbarView: NSView {
                     context.duration = animationDuration
 
                     // Change the width
-                    tab.animator().frame = CGRect(x: distance + 10, y: 0,
-                                                  width: newWidth,
+                    tab.animator().frame = CGRect(x: distance + (tab.willBeDeleted ? 5 : 10), y: 0,
+                                                  width: max(0, newWidth),
                                                   height: frame.height-4)
                 }) {
                     // if the tab is to be deleted, remove the tab from the superview and array when it has been animated out.
                     if tab.willBeDeleted {
-                        print("Deleting tab")
-                        tab.removeFromSuperview()
-                        self.tabs.removeAll(where: { $0 == tab })
+                        print("Deleting tab. Current width: \(tab.frame.width)")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration, execute: {
+                            tab.removeFromSuperview()
+                            self.tabs.removeAll(where: { $0 == tab })
+                        })
                     }
                 }
             } else {
@@ -184,7 +186,9 @@ class CompactTabsToolbarView: NSView {
                                               width: newWidth,
                                               height: frame.height-4)
                 if tab.willBeDeleted {
+                    print("Deleting tab no animation")
                     tab.removeFromSuperview()
+                    self.tabs.removeAll(where: { $0 == tab })
                 }
             }
 

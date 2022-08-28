@@ -144,8 +144,6 @@ class TabView: NSView, Identifiable {
 
         let newTextViewFrame = CGRect(x: frame.height-2, y: 0,
                                       width: frame.width-frame.height+8-4, height: frame.height-3)
-        print("New text frame: \(newTextViewFrame)")
-        print("Frame:          \(frame)")
 
         // if the tab is in expanded mode
         if frame.width > 60 {
