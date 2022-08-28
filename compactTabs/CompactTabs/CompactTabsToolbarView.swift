@@ -145,17 +145,11 @@ class CompactTabsToolbarView: NSView {
         var nonMainTabWidth = minimumNonMainTabWidth
         let numberOfRealTabs = tabs.filter({ !$0.willBeDeleted }).count // only "real" (not to be deleted) tabs count towards the width by the end of the animation
 
-        // check if theres enough space for everything to be full width
-        if (mainTabWidth + 10) * CGFloat(numberOfRealTabs) - 10 <= scrollView.frame.width {
-            // resize everything to fit the view
-            mainTabWidth = (scrollView.frame.width+10) / CGFloat(numberOfRealTabs) - 10
-            nonMainTabWidth = mainTabWidth
-        } else {
-            // the main tab must be 140 wide, so constrain the non main tabs
-            let availableSpace = scrollView.frame.width-mainTabWidth
-            nonMainTabWidth = max((availableSpace / CGFloat(numberOfRealTabs-1)) - 10,
-                                  minimumNonMainTabWidth)
-        }
+        // the main tab must be 140 wide, so constrain the non main tabs
+        let availableSpace = scrollView.frame.width-mainTabWidth
+        nonMainTabWidth = min(mainTabWidth,
+                              max((availableSpace / CGFloat(numberOfRealTabs-1)) - 10,
+                                  minimumNonMainTabWidth))
 
         var distance = CGFloat(-10) // To know where to place the tab
         var index = 0
@@ -209,9 +203,19 @@ class CompactTabsToolbarView: NSView {
         }
 
         // Set the scroll view's document view to be the total tabs width
-        scrollView.documentView?.frame = NSRect(x: 0, y: 0,
-                                                 width: distance,
-                                                 height: frame.height-4)
+        if animated {
+            print("Animating scrollview change")
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = animationDuration
+                scrollView.animator().documentView?.frame = NSRect(x: 0, y: 0,
+                                                                   width: max(scrollView.contentView.frame.width, distance),
+                                                                   height: self.frame.height-4)
+            })
+        } else {
+            scrollView.documentView?.frame = NSRect(x: 0, y: 0,
+                                                    width: max(scrollView.contentView.frame.width, distance),
+                                                    height: frame.height-4)
+        }
     }
 
     /// Resize the text field, reload button, add tab button and tabs button to fit a new size.
