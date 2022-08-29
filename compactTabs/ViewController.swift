@@ -99,10 +99,9 @@ class ViewController: NSViewController {
         let toFocus = tabIndex >= 0 ? (tabIndex < tabs.count ? tabIndex : tabs.count-1) : 0
         tabs[toFocus].frame = view.frame
         view.subviews = [tabs[toFocus]]
-        mainWindow?.urlBarAddress = tabs[toFocus].wkView?.url?.debugDescription ?? ""
         focusedTab = toFocus
-        if update {
-            compactTabsItem?.updateTabs()
+        if update, let oldSize = compactTabsItem?.frame.size {
+            compactTabsItem?.updateViews(withOldSize: oldSize, animate: true)
         }
     }
 
@@ -115,15 +114,13 @@ class ViewController: NSViewController {
     ///   - address: The address that was updated
     ///   - sender: The ``WebPageView`` that triggered the function
     func updateURLBar(toAddress address: String, sender: WebPageView) {
-        if tabs[focusedTab] == sender, let window = mainWindow {
+        if tabs[focusedTab] == sender {
             print("Update tab name to \(address)")
             print("Current tab: \(focusedTab)")
-            window.urlBarAddress = address
         } else {
             print("a background tab navigated to a new page")
         }
-        mainWindow?.updateView()
-        mainWindow?.reloadTabs()
+        compactTabsItem?.updateTabs()
     }
 
     /// A function that loads the address as a URL or as a search query depending on if it contains the needed characters.
@@ -152,11 +149,6 @@ class ViewController: NSViewController {
         } else if let webPageView = view.subviews.first as? WebPageView {
             webPageView.loadPage(address: url.debugDescription)
         }
-    }
-
-    /// Reload tab views
-    func reloadTabs() {
-        mainWindow?.reloadTabs()
     }
 
     /// Helper function to create a new web view and set the frame

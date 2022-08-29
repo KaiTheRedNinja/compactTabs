@@ -35,11 +35,7 @@ class CompactTabsToolbarView: NSView {
 
         // init the address bar
         textField = NSTextField()
-        if let window = self.window?.windowController as? MainWindowController {
-            textField.stringValue = window.urlBarAddress
-        } else {
-            textField.stringValue = ""
-        }
+        textField.stringValue = ""
         textField.delegate = self
         addSubview(textField)
 
@@ -110,12 +106,23 @@ class CompactTabsToolbarView: NSView {
             }
         }
 
+        updateAddressBarText()
+
         // most of the time if the tabs' frames are animated, its due to a tab being added or removed.
         updateTabFrames(animated: true)
     }
 
+    func updateAddressBarText() {
+        if let viewController = viewController {
+            textField.stringValue = viewController.tabs[viewController.focusedTab].wkView?.url?.debugDescription ?? ""
+        } else {
+            textField.stringValue = ""
+        }
+    }
+
     // MARK: View Controller Tab Actions
     func focusTab(sender: TabView) {
+        print("Focusing tab \(sender.textView.stringValue)")
         guard let toFocus = tabs.firstIndex(of: sender) else { return }
         viewController?.focusTab(tabIndex: toFocus)
     }
@@ -139,7 +146,7 @@ class CompactTabsToolbarView: NSView {
     let minimumNonMainTabWidth = CGFloat(30.0)
     /// Update the frames of the ``TabView``s
     /// - Parameter animated: If the frames should be animated or not
-    func updateTabFrames(animated: Bool = false) {
+    private func updateTabFrames(animated: Bool = false) {
         guard let mainTabIndex = viewController?.focusedTab, let scrollView = scrollView else { return }
         var mainTabWidth = defaultMainTabWidth
         var nonMainTabWidth = minimumNonMainTabWidth
@@ -221,13 +228,21 @@ class CompactTabsToolbarView: NSView {
     /// Resize the text field, reload button, add tab button and tabs button to fit a new size.
     /// - Parameter oldSize: The old size of the view
     override func resizeSubviews(withOldSize oldSize: NSSize) {
+        updateViews(withOldSize: oldSize, animate: false)
+    }
+
+    func updateViews(withOldSize oldSize: NSSize, animate: Bool = false) {
         textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
         reloadButton?.frame = CGRect(x: textField.frame.maxX - 20, y: 5, width: frame.height-10, height: frame.height-10)
         addTabButton?.frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
         scrollView?.frame = NSRect(x: textField.frame.maxX+10, y: 2,
                                    width: (addTabButton?.frame.minX ?? 0) - textField.frame.maxX - 20,
                                    height: frame.height-4)
-        updateTabFrames(animated: false)
+        if animate {
+            updateTabs()
+        } else {
+            updateTabFrames()
+        }
     }
 }
 
@@ -236,9 +251,7 @@ extension CompactTabsToolbarView: NSTextFieldDelegate {
     /// Act on the text in the address bar when editing finished.
     /// - Parameter obj: A notification
     func controlTextDidEndEditing(_ obj: Notification) {
-        // save the text
-        if let controller = self.window?.windowController as? MainWindowController {
-            controller.loadPage(address: textField.stringValue)
-        }
+        // Load the page
+        viewController?.loadPage(address: textField.stringValue)
     }
 }

@@ -28,17 +28,13 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
             viewController.mainWindow = self
             viewController.compactTabsItem = compactTabsItem
         }
-
-        updateView()
     }
 
     override init(window: NSWindow?) {
-        urlBarAddress = "Window init"
         super.init(window: window)
     }
 
     required init?(coder: NSCoder) {
-        urlBarAddress = "Coder init"
         super.init(coder: coder)
     }
 
@@ -75,30 +71,6 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
         }
     }
 
-    // MARK: Tab and Navigation Functions
-    func focusTab(index: Int) {
-        if let contentViewController = contentViewController as? ViewController {
-            guard index < contentViewController.tabs.count && index >= 0 else { return }
-            contentViewController.focusTab(tabIndex: index)
-        }
-    }
-
-    func loadPage(address: String) {
-        if let contentViewController = contentViewController as? ViewController {
-            contentViewController.loadPage(address: address)
-        }
-    }
-
-    var urlBarAddress: String {
-        didSet {
-            if let contentViewController = contentViewController as? ViewController {
-                compactTabsItem?.textField.stringValue = urlBarAddress
-                contentViewController.loadPage(address: urlBarAddress)
-            }
-            compactTabsItem?.updateTabs()
-        }
-    }
-
     // MARK: Shortcut Detectors
     override func keyDown(with event: NSEvent) {
         if event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command {
@@ -119,12 +91,8 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
 }
 
 extension MainWindowController: NSWindowDelegate {
-    func windowDidResize(_ notification: Notification) {
-        updateView()
-    }
-
     /// Update the compact tabs item based on how much space it can take up in the toolbar.
-    func updateView() {
+    func windowDidResize(_ notification: Notification) {
         // resize the tabs toolbar item
 
         // get the space before and after the compact tabs item
@@ -136,9 +104,7 @@ extension MainWindowController: NSWindowDelegate {
             space += item.maxSize.width
         }
         compactTabsItem?.frame = NSRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - space, height: 25)
-    }
 
-    func reloadTabs() {
         print("Reloading tabs")
         compactTabsItem?.updateTabs()
     }

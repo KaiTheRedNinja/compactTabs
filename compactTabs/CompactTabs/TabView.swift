@@ -100,11 +100,14 @@ class TabView: NSView, Identifiable {
         }
     }
 
+    var isMain = false
     func becomeMain() {
+        isMain = true
         layer?.backgroundColor = NSColor.gray.cgColor
     }
 
     func resignMain() {
+        isMain = false
         layer?.backgroundColor = .none
     }
 
