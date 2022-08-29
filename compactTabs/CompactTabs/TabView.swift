@@ -64,6 +64,9 @@ class TabView: NSView, Identifiable {
         addSubview(textView)
         addSubview(favicon)
 
+        let zoomRecogniser = NSMagnificationGestureRecognizer(target: self, action: #selector(didPan(_:)))
+        addGestureRecognizer(zoomRecogniser)
+
         // if the tab is in expanded mode
         if rect.width > 60 {
             favicon.frame = CGRect(x: 4, y: 4, width: rect.height-8, height: rect.height-8)
@@ -90,6 +93,19 @@ class TabView: NSView, Identifiable {
             closeTab()
         } else {
             compactTabsItem?.focusTab(sender: self)
+        }
+    }
+
+    var zoomAmount = 0.0
+    @objc func didPan(_ sender: NSMagnificationGestureRecognizer?) {
+        guard let gesture = sender else { return }
+        print("Panned to \(gesture.magnification), state: \(gesture.state)")
+        if gesture.state == .ended {
+            zoomAmount = 0
+            compactTabsItem?.updateTabFrames(animated: true, reposition: false)
+        } else {
+            zoomAmount = gesture.magnification
+            compactTabsItem?.updateTabFrames(animated: false, reposition: false)
         }
     }
 

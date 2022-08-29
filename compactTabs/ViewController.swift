@@ -101,7 +101,6 @@ class ViewController: NSViewController {
             print("Updating focused tab")
             compactTabsItem?.updateViews(animate: true)
         }
-        print(view.subviews)
     }
 
     // MARK: Loading

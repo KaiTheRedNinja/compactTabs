@@ -10,7 +10,7 @@ import Cocoa
 extension CompactTabsToolbarView {
     /// Update the frames of the ``TabView``s
     /// - Parameter animated: If the frames should be animated or not
-    func updateTabFrames(animated: Bool = false) {
+    func updateTabFrames(animated: Bool = false, reposition: Bool = true) {
         guard let mainTabIndex = viewController?.focusedTab, let scrollView = scrollView else { return }
         var nonMainTabWidth = minimumNonMainTabWidth
         let numberOfRealTabs = tabs.filter({ !$0.willBeDeleted }).count // only "real" (not to be deleted) tabs count towards the width by the end of the animation
@@ -26,7 +26,9 @@ extension CompactTabsToolbarView {
         for tab in tabs {
             // if the tab will be deleted, set its width to -10.
             // Else, set it to the main tab width or non main tab width depending on if its the current tab.
-            let newWidth = tab.willBeDeleted ? -10 : (index == mainTabIndex ? defaultMainTabWidth : nonMainTabWidth)
+            var newWidth = index == mainTabIndex ? defaultMainTabWidth : nonMainTabWidth
+            if tab.willBeDeleted { newWidth = -10 }
+            newWidth += defaultMainTabWidth * tab.zoomAmount
             if animated {
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = animationDuration
@@ -87,6 +89,8 @@ extension CompactTabsToolbarView {
                                                     width: max(scrollView.contentView.frame.width, distance),
                                                     height: frame.height-4)
         }
+
+        guard reposition else { return } // only move the scroll view to show the current tab if the function isn't told otherwise
 
         var scrollTo: NSPoint? = nil
         // scroll the document view to reveal the current tab
