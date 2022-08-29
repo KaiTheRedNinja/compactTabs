@@ -105,7 +105,6 @@ extension MainWindowController: NSWindowDelegate {
         }
         compactTabsItem?.frame = NSRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - space, height: 25)
 
-        print("Reloading tabs")
         compactTabsItem?.updateTabs()
     }
 }

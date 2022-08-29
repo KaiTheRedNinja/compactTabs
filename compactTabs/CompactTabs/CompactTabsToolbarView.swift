@@ -148,13 +148,12 @@ class CompactTabsToolbarView: NSView {
     /// - Parameter animated: If the frames should be animated or not
     private func updateTabFrames(animated: Bool = false) {
         guard let mainTabIndex = viewController?.focusedTab, let scrollView = scrollView else { return }
-        var mainTabWidth = defaultMainTabWidth
         var nonMainTabWidth = minimumNonMainTabWidth
         let numberOfRealTabs = tabs.filter({ !$0.willBeDeleted }).count // only "real" (not to be deleted) tabs count towards the width by the end of the animation
 
         // the main tab must be 140 wide, so constrain the non main tabs
-        let availableSpace = scrollView.frame.width-mainTabWidth
-        nonMainTabWidth = min(mainTabWidth,
+        let availableSpace = scrollView.frame.width-defaultMainTabWidth
+        nonMainTabWidth = min(defaultMainTabWidth,
                               max((availableSpace / CGFloat(numberOfRealTabs-1)) - 10,
                                   minimumNonMainTabWidth))
 
@@ -163,7 +162,7 @@ class CompactTabsToolbarView: NSView {
         for tab in tabs {
             // if the tab will be deleted, set its width to -10.
             // Else, set it to the main tab width or non main tab width depending on if its the current tab.
-            let newWidth = tab.willBeDeleted ? -10 : (index == mainTabIndex ? mainTabWidth : nonMainTabWidth)
+            let newWidth = tab.willBeDeleted ? -10 : (index == mainTabIndex ? defaultMainTabWidth : nonMainTabWidth)
             if animated {
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = animationDuration
@@ -211,7 +210,6 @@ class CompactTabsToolbarView: NSView {
 
         // Set the scroll view's document view to be the total tabs width
         if animated {
-            print("Animating scrollview change")
             NSAnimationContext.runAnimationGroup({ context in
                 context.duration = animationDuration
                 scrollView.animator().documentView?.frame = NSRect(x: 0, y: 0,
