@@ -118,7 +118,6 @@ class CompactTabsToolbarView: NSView {
     }
 
     func updateAddressBarText() {
-        print("Updating address bar text")
         if let viewController = viewController, viewController.tabs.count > 0 {
             textField.stringValue = viewController.tabs[viewController.focusedTab].wkView?.url?.debugDescription ?? ""
         } else {
@@ -227,6 +226,38 @@ class CompactTabsToolbarView: NSView {
                                                     width: max(scrollView.contentView.frame.width, distance),
                                                     height: frame.height-4)
         }
+
+        var scrollTo: NSPoint? = nil
+        // scroll the document view to reveal the current tab
+        if let currentTab = tabs.first(where: { $0.isMain }) {
+            // check if the current tab is smaller than the content view,
+            // and if the current tab is not fully in the visible section of the scroll view
+            if currentTab.frame.width < scrollView.contentView.frame.width &&
+                !(currentTab.frame.minX >= scrollView.documentVisibleRect.minX &&
+                    currentTab.frame.maxX <= scrollView.documentVisibleRect.maxX) {
+                // check if it is possible to scroll to the start of the tab
+                if (scrollView.contentView.frame.width - currentTab.frame.minX) >=
+                    scrollView.documentVisibleRect.width {
+                    print("Scrolling to full visible")
+                    scrollTo = NSPoint(x: currentTab.frame.minX, y: 0)
+                } else {
+                    print("Scrolling to end visible")
+                    scrollTo = NSPoint(x: currentTab.frame.maxX, y: 0)
+                }
+
+            // if the tab's width isn't smaller than the visible rect
+            // check if the current tab's starting point isn't within the visible section
+            } else if !(currentTab.frame.minX >= scrollView.documentVisibleRect.minX) {
+                // it will always be possible to scroll to the start of the tab if the tab width
+                // is smaller than the visible rect.
+                print("Scrolling to start visible")
+                scrollTo = NSPoint(x: currentTab.frame.minX, y: 0)
+            }
+        }
+        if let scrollTo = scrollTo {
+            print("Scrolling to \(scrollTo)")
+            scrollView.contentView.scroll(scrollTo)
+        }
     }
 
     /// Resize the text field, reload button, add tab button and tabs button to fit a new size.
@@ -240,7 +271,6 @@ class CompactTabsToolbarView: NSView {
 
         // if theres no tabs open, then just show the URL bar with no tabs
         if (viewController?.tabs.count ?? 0) == 0 {
-            textField.becomeFirstResponder()
             if animate {
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = animationDuration
