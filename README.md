@@ -30,6 +30,9 @@ My Technical Task for Orion
 16. Implement favicons
 17. Implement animations for when tabs go from no title to with title
 18. Implement animations for when tabs resize (eg. when main tab changed, tab added or removed)
+19. Re-architecture and clean up code
+20. Center the URL bar when no tabs are open
+21. Fix crashes related to doing certain actions when animations are playing
 
 ## Todo:
 - Tab reordering
