@@ -11,7 +11,9 @@ extension CompactTabsToolbarView {
     /// Update the frames of the ``TabView``s
     /// - Parameter animated: If the frames should be animated or not
     func updateTabFrames(animated: Bool = false, reposition: Bool = true) {
-        guard let mainTabIndex = viewController?.focusedTab, let scrollView = scrollView else { return }
+        guard let viewController = viewController, let scrollView = scrollView else { return }
+        let mainTabIndex = viewController.focusedTab
+        let currentTab: WebPageView? = (viewController.tabs.count > 0) ? viewController.tabs[mainTabIndex] : nil
         var nonMainTabWidth = minimumNonMainTabWidth
         let numberOfRealTabs = tabs.filter({ !$0.willBeDeleted }).count // only "real" (not to be deleted) tabs count towards the width by the end of the animation
 
@@ -30,18 +32,26 @@ extension CompactTabsToolbarView {
             if tab.willBeDeleted { newWidth = -10 }
             newWidth += defaultMainTabWidth * tab.zoomAmount
             if animated {
+                tab.isAnimating = true
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = animationDuration
 
                     // Change the width
-                    tab.animator().frame = CGRect(x: distance + (tab.willBeDeleted ? 5 : 10), y: 0,
-                                                  width: max(0, newWidth),
-                                                  height: frame.height-4)
+                    if tab.isPanning { // if the tab is being dragged, don't change its view x and y because its handling it itself
+                        tab.animator().frame = CGRect(x: tab.frame.minX, y: tab.frame.minX,
+                                                      width: max(0, newWidth),
+                                                      height: frame.height-4)
+                    } else {
+                        tab.animator().frame = CGRect(x: distance + (tab.willBeDeleted ? 5 : 10), y: 0,
+                                                      width: max(0, newWidth),
+                                                      height: frame.height-4)
+                    }
                     // Change the opacity
                     if tab.willBeDeleted {
                         tab.animator().alphaValue = 0.0
                     }
                 }) {
+                    tab.isAnimating = false
                     // if the tab is to be deleted, remove the tab from the superview and array when it has been animated out.
                     if tab.willBeDeleted {
                         DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration, execute: {
@@ -51,9 +61,15 @@ extension CompactTabsToolbarView {
                     }
                 }
             } else {
-                tab.frame = CGRect(x: distance + 10, y: 0,
-                                              width: newWidth,
-                                              height: frame.height-4)
+                if tab.isPanning {
+                    tab.frame = CGRect(x: tab.frame.minX, y: tab.frame.minY,
+                                       width: newWidth,
+                                       height: frame.height-4)
+                } else {
+                    tab.frame = CGRect(x: distance + 10, y: 0,
+                                       width: newWidth,
+                                       height: frame.height-4)
+                }
                 if tab.willBeDeleted {
                     tab.removeFromSuperview()
                     self.tabs.removeAll(where: { $0 == tab })
@@ -64,7 +80,7 @@ extension CompactTabsToolbarView {
             distance = distance + 10 + newWidth
 
             // Set the tab to main or not main depending if its the currently selected tab
-            if mainTabIndex == index {
+            if currentTab == tab.ascociatedWebPageView {
                 tab.becomeMain()
             } else {
                 tab.resignMain()
@@ -123,6 +139,55 @@ extension CompactTabsToolbarView {
             print("Scrolling to \(scrollTo)")
             scrollView.contentView.scroll(scrollTo)
         }
+    }
+
+    /// Repositions tabs when one is being dragged around
+    /// - Parameters:
+    ///   - movingTab: The tab being dragged
+    ///   - state: The state of the pan gesture moving the tab
+    func repositionTabs(movingTab: TabView, state: NSPanGestureRecognizer.State) {
+        // if the point is in the left or right side of any subview, then move the moving point
+        var repositioned = false
+        let referencePoint = NSPoint(x: movingTab.frame.midX, y: 0)
+        var somethingChanged = false
+        for (index, tab) in tabs.enumerated() {
+            guard !tab.willBeDeleted && !tab.isPanning && !tab.isAnimating else { return }
+            if referencePoint.x < tab.frame.maxX && referencePoint.x >= tab.frame.midX {
+                // the dragged point is on the right side of this tab
+                print("Dragged point on the right side of tab \(index)")
+//                repositioned = true
+//                if let movingTabPosition = tabs.firstIndex(of: movingTab) {
+//                    tabs.remove(at: movingTabPosition)
+//                    tabs.insert(movingTab, at: index+1)
+//                }
+//                somethingChanged = true
+                break
+            } else if referencePoint.x > tab.frame.minX && referencePoint.x < tab.frame.midX {
+                // the dragged point is on the left side of this tab
+                print("Dragged point on the left side of tab \(index)")
+                repositioned = true
+                if let movingTabPosition = tabs.firstIndex(of: movingTab) {
+                    tabs.remove(at: movingTabPosition)
+                    tabs.insert(movingTab, at: index)
+                }
+                somethingChanged = true
+                break
+            }
+        }
+
+        if state == .ended || somethingChanged {
+            // reorder the tabs in view controller to match tab bar
+            viewController?.tabs = viewController?.tabs.sorted(by: { vcTab1, vcTab2 in
+                let firstLocation = tabs.firstIndex(where: { $0.ascociatedWebPageView == vcTab1 })
+                let secondLocation = tabs.firstIndex(where: { $0.ascociatedWebPageView == vcTab2 })
+                return firstLocation ?? -1 < secondLocation ?? -1
+            }) ?? []
+            if let toFocus = viewController?.tabs.firstIndex(where: { movingTab.ascociatedWebPageView == $0 }) {
+                viewController?.focusTab(tabIndex: toFocus)
+            }
+        }
+
+        updateTabFrames(animated: (state == .ended) ? true : repositioned, reposition: false)
     }
 
     /// Resize the text field, reload button, add tab button and tabs button to fit a new size.

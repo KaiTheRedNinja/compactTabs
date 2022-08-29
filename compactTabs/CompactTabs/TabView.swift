@@ -18,6 +18,7 @@ class TabView: NSView, Identifiable {
     var textView: NSTextField
 
     var willBeDeleted: Bool = false
+    var isAnimating: Bool = false
 
     var compactTabsItem: CompactTabsToolbarView?
 
@@ -64,8 +65,10 @@ class TabView: NSView, Identifiable {
         addSubview(textView)
         addSubview(favicon)
 
-        let zoomRecogniser = NSMagnificationGestureRecognizer(target: self, action: #selector(didPan(_:)))
+        let zoomRecogniser = NSMagnificationGestureRecognizer(target: self, action: #selector(didZoom(_:)))
+        let panRecogniser = NSPanGestureRecognizer(target: self, action: #selector(didPan(_:)))
         addGestureRecognizer(zoomRecogniser)
+        addGestureRecognizer(panRecogniser)
 
         // if the tab is in expanded mode
         if rect.width > 60 {
@@ -97,9 +100,8 @@ class TabView: NSView, Identifiable {
     }
 
     var zoomAmount = 0.0
-    @objc func didPan(_ sender: NSMagnificationGestureRecognizer?) {
+    @objc func didZoom(_ sender: NSMagnificationGestureRecognizer?) {
         guard let gesture = sender else { return }
-        print("Panned to \(gesture.magnification), state: \(gesture.state)")
         if gesture.state == .ended {
             zoomAmount = 0
             compactTabsItem?.updateTabFrames(animated: true, reposition: false)
@@ -107,6 +109,23 @@ class TabView: NSView, Identifiable {
             zoomAmount = gesture.magnification
             compactTabsItem?.updateTabFrames(animated: false, reposition: false)
         }
+    }
+
+    var isPanning = false
+    var originalFrame: NSRect = .zero
+    var clickPointOffset: CGFloat = 0.0
+    @objc func didPan(_ sender: NSPanGestureRecognizer?) {
+        guard let gesture = sender else { return }
+        let location = gesture.location(in: self.superview)
+        if gesture.state == .began {
+            isPanning = true
+            originalFrame = self.frame
+            clickPointOffset = location.x - self.frame.minX
+        } else if gesture.state == .ended {
+            isPanning = false
+        }
+        frame = NSRect(x: location.x - clickPointOffset, y: 0, width: frame.width, height: frame.height)
+        compactTabsItem?.repositionTabs(movingTab: self, state: gesture.state)
     }
 
     // detect middle click

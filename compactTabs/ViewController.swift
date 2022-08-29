@@ -147,7 +147,7 @@ class ViewController: NSViewController {
             createTab(url: url)
         } else if let webPageView = webView {
             webPageView.loadPage(address: url.debugDescription)
-        } else if let webPageView = view.subviews.first as? WebPageView {
+        } else if let webPageView = view.subviews.first(where: { $0 is WebPageView }) as? WebPageView {
             webPageView.loadPage(address: url.debugDescription)
         }
     }
