@@ -29,6 +29,13 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
             viewController.compactTabsItem = compactTabsItem
         }
 
+        var space: CGFloat = 110.0
+        for item in self.window?.toolbar?.items ?? [] {
+            guard item.itemIdentifier != .flexibleSpace && item.itemIdentifier != .compactTabsToolbarItem else { continue }
+            space += item.maxSize.width
+        }
+        compactTabsItem?.frame = NSRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - space, height: 25)
+        compactTabsItem?.updateTabs()
         compactTabsItem?.textField.becomeFirstResponder()
     }
 
