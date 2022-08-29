@@ -62,7 +62,6 @@ class ViewController: NSViewController {
     /// Closes a tab. If supplied with a tab index, it closes that tab. If no tab was specified, the current tab will be closed.
     /// - Parameter tabIndex: The tab to close. If nothing was provided, then the current tab will be closed.
     func closeTab(tabIndex: Int? = nil) {
-        print("Closing tab \(tabIndex), currently \(tabs.count) tabs")
         let tabIndex = tabIndex ?? focusedTab
         let reposition = tabIndex == focusedTab
         if tabs.count <= 0 {

@@ -37,6 +37,8 @@ class CompactTabsToolbarView: NSView {
         textField = NSTextField()
         textField.stringValue = ""
         textField.delegate = self
+        textField.target = self
+        textField.action = #selector(updateURL)
         addSubview(textField)
 
         // init the reload button
@@ -108,6 +110,11 @@ class CompactTabsToolbarView: NSView {
 
         // most of the time if the tabs' frames are animated, its due to a tab being added or removed.
         updateTabFrames(animated: true)
+    }
+
+    @objc
+    func updateURL() {
+        viewController?.loadPage(address: textField.stringValue)
     }
 
     func updateAddressBarText() {
@@ -288,7 +295,7 @@ extension CompactTabsToolbarView: NSTextFieldDelegate {
     /// Act on the text in the address bar when editing finished.
     /// - Parameter obj: A notification
     func controlTextDidEndEditing(_ obj: Notification) {
-        // Load the page
-        viewController?.loadPage(address: textField.stringValue)
+        // remove any invalid characters
+        textField.stringValue = textField.stringValue.replacingOccurrences(of: "\n", with: "")
     }
 }
