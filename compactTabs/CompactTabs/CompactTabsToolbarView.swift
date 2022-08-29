@@ -106,11 +106,6 @@ class CompactTabsToolbarView: NSView {
             }
         }
 
-        // if no tabs left, focus the text field
-        if viewController.tabs.count <= 0 {
-            textField.becomeFirstResponder()
-        }
-
         // most of the time if the tabs' frames are animated, its due to a tab being added or removed.
         updateTabFrames(animated: true)
     }
@@ -127,12 +122,13 @@ class CompactTabsToolbarView: NSView {
     // MARK: View Controller Tab Actions
     func focusTab(sender: TabView) {
         print("Focusing tab \(sender.textView.stringValue)")
-        guard let toFocus = tabs.firstIndex(of: sender) else { return }
+        guard let toFocus = tabs.filter({ !$0.willBeDeleted }).firstIndex(of: sender) else { return }
         viewController?.focusTab(tabIndex: toFocus)
     }
 
     func closeTab(sender: TabView) {
-        guard let toClose = tabs.firstIndex(of: sender) else { return }
+        textField.resignFirstResponder()
+        guard let toClose = tabs.filter({ !$0.willBeDeleted }).firstIndex(of: sender) else { return }
         viewController?.closeTab(tabIndex: toClose)
     }
 
@@ -141,6 +137,7 @@ class CompactTabsToolbarView: NSView {
     }
 
     @objc func addTab() {
+        textField.resignFirstResponder()
         viewController?.createTab()
     }
 
@@ -236,6 +233,7 @@ class CompactTabsToolbarView: NSView {
 
         // if theres no tabs open, then just show the URL bar with no tabs
         if (viewController?.tabs.count ?? 0) == 0 {
+            textField.becomeFirstResponder()
             if animate {
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = animationDuration

@@ -62,7 +62,7 @@ class ViewController: NSViewController {
     /// Closes a tab. If supplied with a tab index, it closes that tab. If no tab was specified, the current tab will be closed.
     /// - Parameter tabIndex: The tab to close. If nothing was provided, then the current tab will be closed.
     func closeTab(tabIndex: Int? = nil) {
-        print("Closing tab")
+        print("Closing tab \(tabIndex), currently \(tabs.count) tabs")
         let tabIndex = tabIndex ?? focusedTab
         let reposition = tabIndex == focusedTab
         if tabs.count <= 0 {
@@ -122,6 +122,7 @@ class ViewController: NSViewController {
     /// Note that currently a protocol is required for the regex to identify it as a proper URL.
     /// - Parameter address: The search query or URL.
     func loadPage(address: String) {
+        guard !address.isEmpty else { return }
         // NOTE: If you dont include the protocol, the url will be searched instead.
         if let url = URL(string: address), url.debugDescription.range(of: "^.+://",
                                                          options: .regularExpression,
