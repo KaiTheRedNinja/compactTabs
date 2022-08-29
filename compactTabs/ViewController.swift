@@ -19,6 +19,8 @@ class ViewController: NSViewController {
 
         focusTab(tabIndex: 0)
 
+        compactTabsItem?.textField.becomeFirstResponder()
+
         // Do any additional setup after loading the view.
     }
 
@@ -68,9 +70,8 @@ class ViewController: NSViewController {
             // the last tab was just closed, close the window
             self.mainWindow?.close()
         } else {
-            // close the tab and focus the tab to the right
-            view.subviews = [] // unfocus the current tab
             tabs.remove(at: tabIndex)
+            // close the tab and focus the tab to the right
             if reposition {
                 focusTab(tabIndex: tabIndex)
             } else {
@@ -89,18 +90,18 @@ class ViewController: NSViewController {
     ///   - tabIndex: The index of the tab to update
     ///   - update: If the tab bar should be updated or not
     func focusTab(tabIndex: Int, update: Bool = true) {
+        view.subviews = [view.subviews[0]]
         if tabs.count > 0 {
             let toFocus = tabIndex >= 0 ? (tabIndex < tabs.count ? tabIndex : tabs.count-1) : 0
             tabs[toFocus].frame = view.frame
-            view.subviews = [tabs[toFocus]]
+            view.addSubview(tabs[toFocus])
             focusedTab = toFocus
-        } else {
-            view.subviews = []
         }
         if update {
             print("Updating focused tab")
             compactTabsItem?.updateViews(animate: true)
         }
+        print(view.subviews)
     }
 
     // MARK: Loading
