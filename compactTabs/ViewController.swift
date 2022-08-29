@@ -76,6 +76,10 @@ class ViewController: NSViewController {
             } else {
                 focusTab(tabIndex: tabIndex < focusedTab ? focusedTab-1 : focusedTab)
             }
+
+            if tabs.count == 0 {
+                compactTabsItem?.textField.becomeFirstResponder()
+            }
         }
     }
 

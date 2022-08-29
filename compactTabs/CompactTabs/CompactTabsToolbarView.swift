@@ -129,11 +129,14 @@ class CompactTabsToolbarView: NSView {
     func focusTab(sender: TabView) {
         print("Focusing tab \(sender.textView.stringValue)")
         guard let toFocus = tabs.filter({ !$0.willBeDeleted }).firstIndex(of: sender) else { return }
-        viewController?.focusTab(tabIndex: toFocus)
+        if toFocus == viewController?.focusedTab ?? -1 {
+            textField.becomeFirstResponder()
+        } else {
+            viewController?.focusTab(tabIndex: toFocus)
+        }
     }
 
     func closeTab(sender: TabView) {
-        textField.resignFirstResponder()
         guard let toClose = tabs.filter({ !$0.willBeDeleted }).firstIndex(of: sender) else { return }
         viewController?.closeTab(tabIndex: toClose)
     }
@@ -143,7 +146,6 @@ class CompactTabsToolbarView: NSView {
     }
 
     @objc func addTab() {
-        textField.resignFirstResponder()
         viewController?.createTab()
     }
 
