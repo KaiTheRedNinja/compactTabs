@@ -106,14 +106,18 @@ class CompactTabsToolbarView: NSView {
             }
         }
 
-        updateAddressBarText()
+        // if no tabs left, focus the text field
+        if viewController.tabs.count <= 0 {
+            textField.becomeFirstResponder()
+        }
 
         // most of the time if the tabs' frames are animated, its due to a tab being added or removed.
         updateTabFrames(animated: true)
     }
 
     func updateAddressBarText() {
-        if let viewController = viewController {
+        print("Updating address bar text")
+        if let viewController = viewController, viewController.tabs.count > 0 {
             textField.stringValue = viewController.tabs[viewController.focusedTab].wkView?.url?.debugDescription ?? ""
         } else {
             textField.stringValue = ""
@@ -174,7 +178,6 @@ class CompactTabsToolbarView: NSView {
                 }) {
                     // if the tab is to be deleted, remove the tab from the superview and array when it has been animated out.
                     if tab.willBeDeleted {
-                        print("Deleting tab. Current width: \(tab.frame.width)")
                         DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration, execute: {
                             tab.removeFromSuperview()
                             self.tabs.removeAll(where: { $0 == tab })
@@ -186,7 +189,6 @@ class CompactTabsToolbarView: NSView {
                                               width: newWidth,
                                               height: frame.height-4)
                 if tab.willBeDeleted {
-                    print("Deleting tab no animation")
                     tab.removeFromSuperview()
                     self.tabs.removeAll(where: { $0 == tab })
                 }
@@ -226,16 +228,55 @@ class CompactTabsToolbarView: NSView {
     /// Resize the text field, reload button, add tab button and tabs button to fit a new size.
     /// - Parameter oldSize: The old size of the view
     override func resizeSubviews(withOldSize oldSize: NSSize) {
-        updateViews(withOldSize: oldSize, animate: false)
+        updateViews(animate: false)
     }
 
-    func updateViews(withOldSize oldSize: NSSize, animate: Bool = false) {
-        textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
-        reloadButton?.frame = CGRect(x: textField.frame.maxX - 20, y: 5, width: frame.height-10, height: frame.height-10)
-        addTabButton?.frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
-        scrollView?.frame = NSRect(x: textField.frame.maxX+10, y: 2,
-                                   width: (addTabButton?.frame.minX ?? 0) - textField.frame.maxX - 20,
-                                   height: frame.height-4)
+    func updateViews(animate: Bool = false) {
+        updateAddressBarText()
+
+        // if theres no tabs open, then just show the URL bar with no tabs
+        if (viewController?.tabs.count ?? 0) == 0 {
+            if animate {
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = animationDuration
+                    textField.animator().frame = NSRect(x: 20, y: 0, width: frame.width-60, height: frame.height)
+                    reloadButton?.animator().frame = CGRect(x: frame.width-60, y: 5, width: frame.height-10, height: frame.height-10)
+                    addTabButton?.animator().frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
+                    scrollView?.animator().frame = NSRect(x: frame.maxX - frame.height-10, y: 2,
+                                                          width: 0,
+                                                          height: frame.height-4)
+                })
+            } else {
+                textField.frame = NSRect(x: 20, y: 0, width: frame.width-60, height: frame.height)
+                reloadButton?.frame = CGRect(x: frame.width-60, y: 5, width: frame.height-10, height: frame.height-10)
+                addTabButton?.frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
+                scrollView?.frame = NSRect(x: frame.maxX - frame.height-10, y: 2,
+                                           width: 0,
+                                           height: frame.height-4)
+            }
+
+        // else, show the tabs
+        } else {
+            if animate {
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = animationDuration
+                    textField.animator().frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
+                    reloadButton?.animator().frame = CGRect(x: 210, y: 5, width: frame.height-10, height: frame.height-10)
+                    addTabButton?.animator().frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
+                    scrollView?.animator().frame = NSRect(x: 240, y: 2,
+                                                          width: frame.maxX - frame.height - 260,
+                                                          height: frame.height-4)
+                })
+            } else {
+                textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
+                reloadButton?.frame = CGRect(x: 210, y: 5, width: frame.height-10, height: frame.height-10)
+                addTabButton?.frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
+                scrollView?.frame = NSRect(x: 240, y: 2,
+                                           width: frame.maxX - frame.height - 260,
+                                           height: frame.height-4)
+            }
+        }
+
         if animate {
             updateTabs()
         } else {

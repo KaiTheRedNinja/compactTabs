@@ -17,13 +17,6 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tabs = [
-            createNewWebView(url: URL(string: "https://www.kagi.com")!),
-            createNewWebView(url: URL(string: "https://browser.kagi.com")!),
-            createNewWebView(url: URL(string: "https://browserbench.org/Speedometer2.1/")!),
-            createNewWebView(url: URL(string: "https://developer.apple.com")!)
-        ]
-
         focusTab(tabIndex: 0)
 
         // Do any additional setup after loading the view.
@@ -60,18 +53,19 @@ class ViewController: NSViewController {
 
     // MARK: Tab related functions
     let newTabPage = URL(string: "https://www.kagi.com")!
-    func createTab() {
-        tabs.append(createNewWebView(url: newTabPage))
+    func createTab(url: URL? = nil) {
+        let url = url ?? newTabPage
+        tabs.append(createNewWebView(url: url))
         focusTab(tabIndex: tabs.count-1)
     }
 
     /// Closes a tab. If supplied with a tab index, it closes that tab. If no tab was specified, the current tab will be closed.
     /// - Parameter tabIndex: The tab to close. If nothing was provided, then the current tab will be closed.
     func closeTab(tabIndex: Int? = nil) {
+        print("Closing tab")
         let tabIndex = tabIndex ?? focusedTab
         let reposition = tabIndex == focusedTab
-        if tabs.count == 1 {
-            print("Last window closed")
+        if tabs.count <= 0 {
             // the last tab was just closed, close the window
             self.mainWindow?.close()
         } else {
@@ -79,15 +73,11 @@ class ViewController: NSViewController {
             view.subviews = [] // unfocus the current tab
             tabs.remove(at: tabIndex)
             if reposition {
-                print("Repositioning")
                 focusTab(tabIndex: tabIndex)
             } else {
-                print("Focusing tab \(tabIndex < focusedTab+1 ? focusedTab-1 : focusedTab)")
-                print("Tab index is before current: \(tabIndex < focusedTab+1)")
                 focusTab(tabIndex: tabIndex < focusedTab ? focusedTab-1 : focusedTab)
             }
         }
-        print("Closed tab \(tabIndex). \(tabs.count) left.")
     }
 
     var focusedTab = 0
@@ -96,12 +86,17 @@ class ViewController: NSViewController {
     ///   - tabIndex: The index of the tab to update
     ///   - update: If the tab bar should be updated or not
     func focusTab(tabIndex: Int, update: Bool = true) {
-        let toFocus = tabIndex >= 0 ? (tabIndex < tabs.count ? tabIndex : tabs.count-1) : 0
-        tabs[toFocus].frame = view.frame
-        view.subviews = [tabs[toFocus]]
-        focusedTab = toFocus
-        if update, let oldSize = compactTabsItem?.frame.size {
-            compactTabsItem?.updateViews(withOldSize: oldSize, animate: true)
+        if tabs.count > 0 {
+            let toFocus = tabIndex >= 0 ? (tabIndex < tabs.count ? tabIndex : tabs.count-1) : 0
+            tabs[toFocus].frame = view.frame
+            view.subviews = [tabs[toFocus]]
+            focusedTab = toFocus
+        } else {
+            view.subviews = []
+        }
+        if update {
+            print("Updating focused tab")
+            compactTabsItem?.updateViews(animate: true)
         }
     }
 
@@ -144,7 +139,9 @@ class ViewController: NSViewController {
     ///   - url: The URL to load
     ///   - webView: The web view to load, or the frontmost if left blank.
     private func loadWebPage(url: URL, webView: WebPageView? = nil) {
-        if let webPageView = webView {
+        if tabs.count <= 0 {
+            createTab(url: url)
+        } else if let webPageView = webView {
             webPageView.loadPage(address: url.debugDescription)
         } else if let webPageView = view.subviews.first as? WebPageView {
             webPageView.loadPage(address: url.debugDescription)

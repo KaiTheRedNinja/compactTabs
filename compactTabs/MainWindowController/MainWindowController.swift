@@ -28,6 +28,8 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
             viewController.mainWindow = self
             viewController.compactTabsItem = compactTabsItem
         }
+
+        compactTabsItem?.textField.becomeFirstResponder()
     }
 
     override init(window: NSWindow?) {

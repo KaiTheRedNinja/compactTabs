@@ -167,6 +167,7 @@ class TabView: NSView, Identifiable {
                     if self.frame.width > 60 {
                         self.favicon.frame = CGRect(x: 4, y: 4, width: self.frame.height-8, height: self.frame.height-8)
                     }
+                    self.updateTrackingAreas()
                 }
             } else { // no animation needed
                 textView.alphaValue = 1
@@ -193,6 +194,7 @@ class TabView: NSView, Identifiable {
                                                     width: self.frame.height-7, height: self.frame.height-8)
                     }
                     self.textView.frame = newTextViewFrame
+                    self.updateTrackingAreas()
                 }
             } else { // no animation needed
                 favicon.frame = CGRect(x: (frame.width - (frame.height-8))/2, y: 4, width: frame.height-7, height: frame.height-8)
