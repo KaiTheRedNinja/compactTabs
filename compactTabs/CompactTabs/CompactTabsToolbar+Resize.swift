@@ -38,7 +38,7 @@ extension CompactTabsToolbarView {
 
                     // Change the width
                     if tab.isPanning { // if the tab is being dragged, don't change its view x and y because its handling it itself
-                        tab.animator().frame = CGRect(x: tab.frame.minX, y: tab.frame.minX,
+                        tab.animator().frame = CGRect(x: tab.frame.minX, y: 0,
                                                       width: max(0, newWidth),
                                                       height: frame.height-4)
                     } else {
@@ -62,7 +62,7 @@ extension CompactTabsToolbarView {
                 }
             } else {
                 if tab.isPanning {
-                    tab.frame = CGRect(x: tab.frame.minX, y: tab.frame.minY,
+                    tab.frame = CGRect(x: tab.frame.minX, y: 0,
                                        width: newWidth,
                                        height: frame.height-4)
                 } else {
