@@ -110,9 +110,13 @@ extension MainWindowController: NSWindowDelegate {
         var space: CGFloat = 110.0
         for item in self.window?.toolbar?.items ?? [] {
             guard item.itemIdentifier != .flexibleSpace && item.itemIdentifier != .compactTabsToolbarItem else { continue }
-            space += item.maxSize.width
+            space += item.maxSize.width + 10
+            print("Item \(item.itemIdentifier): \(item.maxSize.width + 10)")
         }
+        print("Space: \(space)")
+        print("Window: \(window?.frame.width ?? 800)")
         compactTabsItem?.frame = NSRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - space, height: 25)
+        print("New frame: \(compactTabsItem?.frame)")
 
         compactTabsItem?.updateTabs()
     }

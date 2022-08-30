@@ -11,7 +11,10 @@ extension MainWindowController: NSToolbarDelegate {
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
         [
             .backForwardButtons,
-            .compactTabsToolbarItem
+            .extensionToolbarItem,
+            .compactTabsToolbarItem,
+            .extensionToolbarItem,
+            .extensionToolbarItem,
         ]
     }
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
@@ -19,7 +22,8 @@ extension MainWindowController: NSToolbarDelegate {
             .space,
             .flexibleSpace,
             .backForwardButtons,
-            .compactTabsToolbarItem
+            .compactTabsToolbarItem,
+            .extensionToolbarItem
         ]
     }
 
@@ -32,6 +36,7 @@ extension MainWindowController: NSToolbarDelegate {
 
             // Init the custom view
             let view = CompactTabsToolbarView(frame: CGRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - 100, height: 25))
+            view.translatesAutoresizingMaskIntoConstraints = false
             view.autoresizingMask = [.width, .height]
             view.viewController = self.contentViewController as? ViewController
             toolbarItem.label = "Compact Tabs"
@@ -65,6 +70,12 @@ extension MainWindowController: NSToolbarDelegate {
             toolbarItem.view = view
             return toolbarItem
 
+        case .extensionToolbarItem:
+            let toolbarItem = NSToolbarItem(itemIdentifier: NSToolbarItem.Identifier.extensionToolbarItem)
+            toolbarItem.label = "Extension"
+            toolbarItem.image = NSImage(named: "extension")
+            return toolbarItem
+
         default:
             return NSToolbarItem(itemIdentifier: itemIdentifier)
         }
@@ -90,4 +101,5 @@ extension MainWindowController: NSToolbarDelegate {
 extension NSToolbarItem.Identifier {
     static let backForwardButtons = NSToolbarItem.Identifier("BackForwardButtons")
     static let compactTabsToolbarItem = NSToolbarItem.Identifier("CompactTabsToolbarItem")
+    static let extensionToolbarItem = NSToolbarItem.Identifier("ExtensionToolbarItem")
 }
