@@ -85,13 +85,11 @@ class CompactTabsToolbarView: NSView {
                 tabView.updateWith(webPageView: tab)
             }
         } else if tabs.count > viewController.tabs.count {
-            print("Deleting excess tabs")
             // too many tabs, delete extra tabs
             var deletedTabs = 0
             for tab in tabs {
                 // Mark the extra tab as will be deleted. This view will be animated out and removed in the updateTabFrames function.
                 if let webPage = tab.ascociatedWebPageView, !viewController.tabs.contains(webPage) {
-                    print("Tab \(tab.textView.stringValue) to be removed/")
                     tab.willBeDeleted = true
                     deletedTabs += 1
                 }

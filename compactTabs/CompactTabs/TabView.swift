@@ -163,13 +163,13 @@ class TabView: NSView, Identifiable {
         }
 
         // Load the favicon from cache, or fetch and cache it if unavailable.
-        faviconImage = TabView.unknownFavicon
-        favicon.image = faviconImage
-        DispatchQueue.main.async {
-            if let url = wkView?.url, let cachedIcon = TabView.faviconCache[url] {
-                self.faviconImage = cachedIcon
-                self.favicon.image = self.faviconImage
-            } else if let wkView = wkView, let url = wkView.url {
+        if let url = wkView?.url, let cachedIcon = TabView.faviconCache[url] {
+            faviconImage = cachedIcon
+            favicon.image = faviconImage
+        } else if let wkView = wkView, let url = wkView.url {
+            faviconImage = TabView.unknownFavicon
+            favicon.image = faviconImage
+            DispatchQueue.main.async {
                 self.faviconImage = faviconFor(url: url)
                 self.favicon.image = self.faviconImage
                 TabView.faviconCache[url] = self.favicon.image
@@ -258,6 +258,7 @@ class TabView: NSView, Identifiable {
     }
 
     public override func updateTrackingAreas() {
+        mouseHovering = false
         removeTrackingArea(area)
         area = makeTrackingArea()
         addTrackingArea(area)
