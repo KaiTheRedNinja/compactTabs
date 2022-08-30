@@ -30,7 +30,7 @@ extension CompactTabsToolbarView {
             // Else, set it to the main tab width or non main tab width depending on if its the current tab.
             var newWidth = index == mainTabIndex ? defaultMainTabWidth : nonMainTabWidth
             if tab.willBeDeleted { newWidth = -10 }
-            newWidth += defaultMainTabWidth * tab.zoomAmount
+            newWidth += defaultMainTabWidth * max(0, tab.zoomAmount)
             if animated {
                 tab.isAnimating = true
                 NSAnimationContext.runAnimationGroup({ context in
