@@ -32,19 +32,19 @@ class ViewController: NSViewController {
 
     // MARK: Web View Functions
     func goBack() {
-        if let webView = view.subviews.first as? WebPageView {
+        if let webView = view.subviews[1] as? WebPageView {
             webView.goBack()
         }
     }
 
     func goForward() {
-        if let webView = view.subviews.first as? WebPageView {
+        if let webView = view.subviews[1] as? WebPageView {
             webView.goForward()
         }
     }
 
     func reloadTab() {
-        if let webView = view.subviews.first as? WebPageView {
+        if let webView = view.subviews[1] as? WebPageView {
             // because they're reloading, we should probably reload the favicon as well
             if let url = webView.wkView?.url {
                 TabView.faviconCache.removeValue(forKey: url)

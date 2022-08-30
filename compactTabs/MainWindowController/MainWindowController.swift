@@ -94,6 +94,11 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
                 if let contentViewController = contentViewController as? ViewController {
                     contentViewController.createTab()
                 }
+            } else if event.keyCode == 1 { // cmd-r
+                print("Cmd-r pressed")
+                if let contentViewController = contentViewController as? ViewController {
+                    contentViewController.reloadTab()
+                }
             }
         }
     }
