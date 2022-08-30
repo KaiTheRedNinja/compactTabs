@@ -10,7 +10,7 @@
         <scene sceneID="JPo-4y-FX3">
             <objects>
                 <application id="hnw-xV-0zn" sceneMemberID="viewController">
-                    <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
+                    <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6" customClass="TopMenu" customModule="Compact_Tabs" customModuleProvider="target">
                         <items>
                             <menuItem title="compactTabs" id="1Xt-HY-uBw">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -114,6 +114,17 @@
                                         <menuItem title="Print…" keyEquivalent="p" id="aTl-1u-JFS">
                                             <connections>
                                                 <action selector="print:" target="Ady-hI-5gd" id="qaZ-4w-aoO"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="6Nh-sa-Lx2"/>
+                                        <menuItem title="New Tab" keyEquivalent="t" id="9rX-P8-9gS">
+                                            <connections>
+                                                <action selector="newTab:" target="Ady-hI-5gd" id="zdJ-s4-Zys"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Close Tab" keyEquivalent="w" id="yNF-2O-S6m">
+                                            <connections>
+                                                <action selector="closeTab:" target="Ady-hI-5gd" id="6g1-ka-OVm"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -628,6 +639,22 @@
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
                                                 <action selector="toggleFullScreen:" target="Ady-hI-5gd" id="dU3-MA-1Rq"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="Orh-mE-c3j"/>
+                                        <menuItem title="Reload Page" keyEquivalent="r" id="5VT-O1-SGy">
+                                            <connections>
+                                                <action selector="reloadTab:" target="Ady-hI-5gd" id="Ebt-pz-de4"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Go Back" keyEquivalent="[" id="GQh-dv-J24">
+                                            <connections>
+                                                <action selector="backButtonPressed:" target="Ady-hI-5gd" id="wK5-AY-Kd3"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Go Forward" keyEquivalent="]" id="SY5-h5-eFI">
+                                            <connections>
+                                                <action selector="forwardButtonPressed:" target="Ady-hI-5gd" id="71D-At-v6U"/>
                                             </connections>
                                         </menuItem>
                                     </items>

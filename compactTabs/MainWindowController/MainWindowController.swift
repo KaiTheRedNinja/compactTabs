@@ -68,38 +68,33 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
     }
 
     // MARK: Toolbar Button Actions
-    func backButtonPressed(_ sender: Any) {
+    @IBAction func backButtonPressed(_ sender: Any) {
         if let contentViewController = contentViewController as? ViewController {
             contentViewController.goBack()
         }
     }
 
-    func forwardButtonPressed(_ sender: Any) {
+    @IBAction func forwardButtonPressed(_ sender: Any) {
         if let contentViewController = contentViewController as? ViewController {
             contentViewController.goForward()
         }
     }
 
-    // MARK: Shortcut Detectors
-    override func keyDown(with event: NSEvent) {
-        if event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command {
-            print(event.keyCode)
-            if event.keyCode == 13 { // cmd-w
-                print("Cmd-w pressed")
-                if let contentViewController = contentViewController as? ViewController {
-                    contentViewController.closeTab()
-                }
-            } else if event.keyCode == 3 { // cmd-t
-                print("Cmd-t pressed")
-                if let contentViewController = contentViewController as? ViewController {
-                    contentViewController.createTab()
-                }
-            } else if event.keyCode == 1 { // cmd-r
-                print("Cmd-r pressed")
-                if let contentViewController = contentViewController as? ViewController {
-                    contentViewController.reloadTab()
-                }
-            }
+    @IBAction func closeTab(_ sender: Any) {
+        if let contentViewController = contentViewController as? ViewController {
+            contentViewController.closeTab()
+        }
+    }
+
+    @IBAction func newTab(_ sender: Any) {
+        if let contentViewController = contentViewController as? ViewController {
+            contentViewController.createTab()
+        }
+    }
+
+    @IBAction func reloadTab(_ sender: Any) {
+        if let contentViewController = contentViewController as? ViewController {
+            contentViewController.reloadTab()
         }
     }
 }
