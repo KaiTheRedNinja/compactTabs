@@ -151,20 +151,19 @@ extension CompactTabsToolbarView {
         let referencePoint = NSPoint(x: movingTab.frame.midX, y: 0)
         var somethingChanged = false
         for (index, tab) in tabs.enumerated() {
-            guard !tab.willBeDeleted && !tab.isPanning && !tab.isAnimating else { return }
+            guard !tab.willBeDeleted && !tab.isPanning && !tab.isAnimating else { continue }
             if referencePoint.x < tab.frame.maxX && referencePoint.x >= tab.frame.midX {
                 // the dragged point is on the right side of this tab
-                print("Dragged point on the right side of tab \(index)")
-//                repositioned = true
-//                if let movingTabPosition = tabs.firstIndex(of: movingTab) {
-//                    tabs.remove(at: movingTabPosition)
-//                    tabs.insert(movingTab, at: index+1)
-//                }
-//                somethingChanged = true
+                repositioned = true
+                if let movingTabPosition = tabs.firstIndex(of: movingTab) {
+                    tabs.remove(at: movingTabPosition)
+                    let goTo = tabs.firstIndex(of: tab) ?? (movingTabPosition - 1)
+                    tabs.insert(movingTab, at: goTo + 1)
+                }
+                somethingChanged = true
                 break
             } else if referencePoint.x > tab.frame.minX && referencePoint.x < tab.frame.midX {
                 // the dragged point is on the left side of this tab
-                print("Dragged point on the left side of tab \(index)")
                 repositioned = true
                 if let movingTabPosition = tabs.firstIndex(of: movingTab) {
                     tabs.remove(at: movingTabPosition)
