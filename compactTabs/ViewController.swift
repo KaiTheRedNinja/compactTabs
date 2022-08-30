@@ -98,7 +98,7 @@ class ViewController: NSViewController {
             focusedTab = toFocus
         }
         if update {
-            print("Updating focused tab")
+            print("\(NSDate().timeIntervalSince1970) Updating focused tab")
             compactTabsItem?.updateViews(animate: true)
         }
     }

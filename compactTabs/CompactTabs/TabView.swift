@@ -185,6 +185,7 @@ class TabView: NSView, Identifiable {
 
         // if the tab is in expanded mode
         if frame.width > 60 {
+            print("Animating to expanded")
             // if the frame just only got expanded from compact mode, animate the changes
             if oldSize.width <= 60 {
                 NSAnimationContext.runAnimationGroup({ context in
@@ -212,6 +213,7 @@ class TabView: NSView, Identifiable {
 
         // if the tab is in compact mode
         } else {
+            print("Animating to contracted")
             // if the frame just only got compacted from expanded mode, animate the changes
             if oldSize.width > 60 {
                 NSAnimationContext.runAnimationGroup({ context in

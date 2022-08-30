@@ -70,20 +70,22 @@ class CompactTabsToolbarView: NSView {
 
         // get the number of tabs there are, creating and removing tabs as needed
         if tabs.count < viewController.tabs.count {
-            print("Creating missing tabs")
+            print("\(NSDate().timeIntervalSince1970) Creating missing tabs: ")
             // missing tabs, just create the remaining tabs
             // Due to the way the code is implemented, tabs can only be created as the last item.
             let originalTabCount = tabs.count
             for (tabIndex, tab) in viewController.tabs.enumerated() {
                 if tabIndex < originalTabCount { continue }
                 let distance = tabs.last?.frame.maxX ?? 0
-                let tabView = TabView(frame: CGRect(x: distance + 10, y: 2, width: 0, height: frame.height-4))
+                let tabView = TabView(frame: CGRect(x: distance + 10, y: 2, width: tabs.count == 0 ? 70 : 0, height: frame.height-4))
+                tabView.updateWith(webPageView: tab)
                 tabView.compactTabsItem = self
 
                 tabs.append(tabView)
                 scrollView?.documentView?.addSubview(tabView)
                 tabView.updateWith(webPageView: tab)
             }
+            print("\(NSDate().timeIntervalSince1970) Finished creating missing tabs")
         } else if tabs.count > viewController.tabs.count {
             print("Deleting excess tabs")
             // too many tabs, delete extra tabs
@@ -148,6 +150,7 @@ class CompactTabsToolbarView: NSView {
     }
 
     @objc func addTab() {
+        print("\(NSDate().timeIntervalSince1970) Creating tab")
         viewController?.createTab()
     }
 

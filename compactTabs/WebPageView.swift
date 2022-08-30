@@ -36,7 +36,9 @@ class WebPageView: NSView {
 
         // load the initial page
         if let address = address {
-            loadPage(address: address)
+            DispatchQueue.main.async {
+                self.loadPage(address: address)
+            }
         }
     }
 
