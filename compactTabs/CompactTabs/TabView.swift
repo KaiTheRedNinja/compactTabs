@@ -46,7 +46,6 @@ class TabView: NSView, Identifiable {
         wantsLayer = true
         layer?.cornerRadius = 4
         layer?.borderWidth = 1
-        layer?.borderColor = NSColor.gray.cgColor
 
         faviconImage = NSImage(named: "unknown")!
         favicon.image = faviconImage
@@ -138,12 +137,14 @@ class TabView: NSView, Identifiable {
     var isMain = false
     func becomeMain() {
         isMain = true
-        layer?.backgroundColor = NSColor.gray.cgColor
+        layer?.backgroundColor = NSColor(named: "tabColor")!.cgColor
+        layer?.borderColor = .clear
     }
 
     func resignMain() {
         isMain = false
         layer?.backgroundColor = .none
+        layer?.borderColor = NSColor(named: "tabColor")!.cgColor
     }
 
     /// Update the tab view's text and favicon. The favicon is cached to avoid repeated fetching.
@@ -240,6 +241,15 @@ class TabView: NSView, Identifiable {
             }
         }
         updateTrackingAreas()
+    }
+
+    /// Update the tab's highlight colour on appearance change
+    override func updateLayer() {
+        if isMain {
+            layer?.backgroundColor = NSColor(named: "tabColor")!.cgColor
+        } else {
+            layer?.borderColor = NSColor(named: "tabColor")!.cgColor
+        }
     }
 
     // MARK: Mouse hover
