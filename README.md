@@ -1,6 +1,10 @@
 # Orion Compact Tabs
 My Technical Task for Orion
 
+## Unique Additions
+1. Zoom out to expand tab temporarily. A large pain of compact tabs is that it gets harder to identify tabs, especially when they have similar favicons and are in their compact favicon-only mode. My solution was to allow the user to expand the width of a tab temporarily (eg. to see the tab title) by means of a zoom gesture, which is an intuitive way to reveal the tab's title.
+2. Double click on tab or click on currently active tab to focus address field. Reading through the Orion Feedback thread, I saw a few comments saying how clicking on a tab and then clicking the address bar is a bit troublesome in Orion's concept (click on tab -> move cursor -> click on address bar), wheras its a lot simpler in Safari's (click on tab -> click on tab again to focus in-tab address bar). I made it so that clicking on the active tab focuses the address bar, so that one can simply double click on a tab to switch to it and focus the URL bar. 
+
 ## How it works + Interesting things to note
 ### Making the toolbar item fill up the available space
 ### Changing the URL
