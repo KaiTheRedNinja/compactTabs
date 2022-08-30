@@ -48,5 +48,4 @@ My Technical Task for Orion
 23. Added the ability to reorder tabs
 
 ## Todo:
-- Tab reordering
 - Re-enable Toolbar Customisation
