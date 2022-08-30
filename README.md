@@ -2,7 +2,14 @@
 My Technical Task for Orion
 
 ## How it works + Interesting things to note
-// Todo
+### Making the toolbar item fill up the available space
+### Changing the URL
+### Favicons and Tab Titles
+### Tabs + Resizing + Animations
+### Switching Tabs
+### Closing/opening new tabs
+### Zoom out to expand tab temporarily
+### Tab Reordering
 
 ## Difficulties
 - No SF Symbols due to version requirement (instead I just added the sf images to assets)
@@ -33,6 +40,8 @@ My Technical Task for Orion
 19. Re-architecture and clean up code
 20. Center the URL bar when no tabs are open
 21. Fix crashes related to doing certain actions when animations are playing
+22. Added the ability to use a zoom out trackpad gesture to expand the width of a tab temporarily
+23. Added the ability to reorder tabs
 
 ## Todo:
 - Tab reordering
