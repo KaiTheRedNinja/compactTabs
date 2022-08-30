@@ -17,9 +17,7 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        focusTab(tabIndex: 0)
-
-        compactTabsItem?.textField.becomeFirstResponder()
+        createTab()
 
         // Do any additional setup after loading the view.
     }
