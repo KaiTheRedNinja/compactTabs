@@ -163,15 +163,17 @@ class TabView: NSView, Identifiable {
         }
 
         // Load the favicon from cache, or fetch and cache it if unavailable.
-        if let url = wkView?.url, let cachedIcon = TabView.faviconCache[url] {
-            faviconImage = cachedIcon
-            favicon.image = faviconImage
-        } else if let wkView = wkView, let url = wkView.url {
-            faviconImage = faviconFor(url: url)
-            favicon.image = faviconImage
-            TabView.faviconCache[url] = favicon.image
-        } else {
-            favicon.image = TabView.unknownFavicon
+        faviconImage = TabView.unknownFavicon
+        favicon.image = faviconImage
+        DispatchQueue.main.async {
+            if let url = wkView?.url, let cachedIcon = TabView.faviconCache[url] {
+                self.faviconImage = cachedIcon
+                self.favicon.image = self.faviconImage
+            } else if let wkView = wkView, let url = wkView.url {
+                self.faviconImage = faviconFor(url: url)
+                self.favicon.image = self.faviconImage
+                TabView.faviconCache[url] = self.favicon.image
+            }
         }
     }
 
