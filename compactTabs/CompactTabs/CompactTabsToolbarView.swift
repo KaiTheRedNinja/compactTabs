@@ -108,6 +108,8 @@ class CompactTabsToolbarView: NSView {
             }
         }
 
+        updateAddressBarText()
+
         // most of the time if the tabs' frames are animated, its due to a tab being added or removed.
         updateTabFrames(animated: true)
     }

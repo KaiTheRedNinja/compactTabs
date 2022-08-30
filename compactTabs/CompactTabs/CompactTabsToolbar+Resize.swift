@@ -197,8 +197,6 @@ extension CompactTabsToolbarView {
     }
 
     func updateViews(animate: Bool = false) {
-        updateAddressBarText()
-
         // if theres no tabs open, then just show the URL bar with no tabs
         if (viewController?.tabs.count ?? 0) == 0 {
             if animate {
