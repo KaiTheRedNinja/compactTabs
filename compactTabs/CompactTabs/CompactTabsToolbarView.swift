@@ -34,7 +34,6 @@ class CompactTabsToolbarView: NSView {
         // the frames of all the items don't actually have to be created yet. They're set when the window inevitably resizes.
 
         // init the address bar
-        textField = NSTextField()
         textField.stringValue = ""
         textField.delegate = self
         textField.target = self
@@ -61,6 +60,7 @@ class CompactTabsToolbarView: NSView {
         scrollView?.wantsLayer = true
         scrollView?.layer?.cornerRadius = 4 // just a small attention to detail so that tabs don't look abruptly cut off
         addSubview(scrollView!)
+        scrollView?.verticalScrollElasticity = .none
     }
 
     // MARK: Tab actions
