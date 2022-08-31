@@ -109,7 +109,7 @@ class ViewController: NSViewController {
     ///   - address: The address that was updated
     ///   - sender: The ``WebPageView`` that triggered the function
     func updateURLBar(toAddress address: String, sender: WebPageView) {
-        if tabs[focusedTab] == sender {
+        if !tabs.isEmpty && tabs[focusedTab] == sender {
             print("Update tab name to \(address)")
             print("Current tab: \(focusedTab)")
         } else {
