@@ -76,7 +76,8 @@ class CompactTabsToolbarView: NSView {
             for (tabIndex, tab) in viewController.tabs.enumerated() {
                 if tabIndex < originalTabCount { continue }
                 let distance = tabs.last?.frame.maxX ?? 0
-                let tabView = TabView(frame: CGRect(x: distance + 10, y: 2, width: tabs.count == 0 ? 70 : 0, height: frame.height-4))
+                let tabView = TabView(frame: CGRect(x: distance + 10, y: 0, width: tabs.count == 0 ? 70 : 0,
+                                                    height: scrollView?.documentView?.frame.height ?? 15))
                 tabView.updateWith(webPageView: tab)
                 tabView.compactTabsItem = self
 

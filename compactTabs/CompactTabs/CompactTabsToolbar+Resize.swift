@@ -40,11 +40,11 @@ extension CompactTabsToolbarView {
                     if tab.isPanning { // if the tab is being dragged, don't change its view x and y because its handling it itself
                         tab.animator().frame = CGRect(x: tab.frame.minX, y: 0,
                                                       width: max(0, newWidth),
-                                                      height: frame.height-4)
+                                                      height: scrollView.documentView?.frame.height ?? 15)
                     } else {
                         tab.animator().frame = CGRect(x: distance + (tab.willBeDeleted ? 5 : 10), y: 0,
                                                       width: max(0, newWidth),
-                                                      height: frame.height-4)
+                                                      height: scrollView.documentView?.frame.height ?? 15)
                     }
                     // Change the opacity
                     if tab.willBeDeleted {
@@ -64,11 +64,11 @@ extension CompactTabsToolbarView {
                 if tab.isPanning {
                     tab.frame = CGRect(x: tab.frame.minX, y: 0,
                                        width: newWidth,
-                                       height: frame.height-4)
+                                       height: scrollView.documentView?.frame.height ?? 15)
                 } else {
                     tab.frame = CGRect(x: distance + 10, y: 0,
                                        width: newWidth,
-                                       height: frame.height-4)
+                                       height: scrollView.documentView?.frame.height ?? 15)
                 }
                 if tab.willBeDeleted {
                     tab.removeFromSuperview()
@@ -98,12 +98,12 @@ extension CompactTabsToolbarView {
                 context.duration = animationDuration
                 scrollView.animator().documentView?.frame = NSRect(x: 0, y: 0,
                                                                    width: max(scrollView.contentView.frame.width, distance),
-                                                                   height: self.frame.height-4)
+                                                                   height: scrollView.frame.height)
             })
         } else {
             scrollView.documentView?.frame = NSRect(x: 0, y: 0,
                                                     width: max(scrollView.contentView.frame.width, distance),
-                                                    height: frame.height-4)
+                                                    height: scrollView.frame.height)
         }
 
         guard reposition else { return } // only move the scroll view to show the current tab if the function isn't told otherwise
@@ -214,7 +214,7 @@ extension CompactTabsToolbarView {
                 addTabButton?.frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
                 scrollView?.frame = NSRect(x: frame.maxX - frame.height-10, y: 2,
                                            width: 0,
-                                           height: frame.height-4)
+                                           height: frame.height-2)
             }
 
         // else, show the tabs
@@ -227,7 +227,7 @@ extension CompactTabsToolbarView {
                     addTabButton?.animator().frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
                     scrollView?.animator().frame = NSRect(x: 240, y: 2,
                                                           width: frame.maxX - frame.height - 260,
-                                                          height: frame.height-4)
+                                                          height: frame.height-3)
                 })
             } else {
                 textField.frame = NSRect(x: 0, y: 0, width: 230, height: frame.height)
@@ -235,7 +235,7 @@ extension CompactTabsToolbarView {
                 addTabButton?.frame = CGRect(x: frame.maxX - frame.height-10, y: 5, width: frame.height-10, height: frame.height-10)
                 scrollView?.frame = NSRect(x: 240, y: 2,
                                            width: frame.maxX - frame.height - 260,
-                                           height: frame.height-4)
+                                           height: frame.height-3)
             }
         }
 

@@ -144,7 +144,7 @@ class TabView: NSView, Identifiable {
     func resignMain() {
         isMain = false
         layer?.backgroundColor = .none
-        layer?.borderColor = NSColor(named: "tabColor")!.cgColor
+        layer?.borderColor = NSColor(named: "tabOutline")!.cgColor
     }
 
     /// Update the tab view's text and favicon. The favicon is cached to avoid repeated fetching.
@@ -248,7 +248,7 @@ class TabView: NSView, Identifiable {
         if isMain {
             layer?.backgroundColor = NSColor(named: "tabColor")!.cgColor
         } else {
-            layer?.borderColor = NSColor(named: "tabColor")!.cgColor
+            layer?.borderColor = NSColor(named: "tabOutline")!.cgColor
         }
     }
 
