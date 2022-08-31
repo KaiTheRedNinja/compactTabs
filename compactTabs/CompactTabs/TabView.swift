@@ -300,3 +300,13 @@ func faviconFor(url: URL?, size: Int = 32) -> NSImage {
     guard let image = NSImage(data: data) else { return TabView.unknownFavicon }
     return image
 }
+
+extension Array where Element == TabView {
+    var realTabCount: Int {
+        self.filter({ !$0.willBeDeleted }).count
+    }
+
+    var realTabs: [TabView] {
+        self.filter({ !$0.willBeDeleted })
+    }
+}

@@ -69,14 +69,14 @@ class CompactTabsToolbarView: NSView {
         guard let viewController = viewController else { return }
 
         // get the number of tabs there are, creating and removing tabs as needed
-        if tabs.filter({ !$0.willBeDeleted }).count < viewController.tabs.count {
+        if tabs.realTabCount < viewController.tabs.count {
             // missing tabs, just create the remaining tabs
             // Due to the way the code is implemented, tabs can only be created as the last item.
-            let originalTabCount = tabs.filter({ !$0.willBeDeleted }).count
+            let originalTabCount = tabs.realTabCount
             for (tabIndex, tab) in viewController.tabs.enumerated() {
                 if tabIndex < originalTabCount { continue }
                 let distance = tabs.last?.frame.maxX ?? 0
-                let tabView = TabView(frame: CGRect(x: distance + 10, y: 0, width: tabs.count == 0 ? 70 : 0,
+                let tabView = TabView(frame: CGRect(x: distance + 10, y: 0, width: tabs.realTabCount == 0 ? 70 : 0,
                                                     height: scrollView?.documentView?.frame.height ?? 15))
                 tabView.updateWith(webPageView: tab)
                 tabView.compactTabsItem = self
@@ -85,7 +85,7 @@ class CompactTabsToolbarView: NSView {
                 scrollView?.documentView?.addSubview(tabView)
                 tabView.updateWith(webPageView: tab)
             }
-        } else if tabs.filter({ !$0.willBeDeleted }).count > viewController.tabs.count {
+        } else if tabs.realTabCount > viewController.tabs.count {
             // too many tabs, delete extra tabs
             var deletedTabs = 0
             for tab in tabs {
@@ -129,7 +129,7 @@ class CompactTabsToolbarView: NSView {
     // MARK: View Controller Tab Actions
     func focusTab(sender: TabView) {
         print("Focusing tab \(sender.textView.stringValue)")
-        guard let toFocus = tabs.filter({ !$0.willBeDeleted }).firstIndex(of: sender) else { return }
+        guard let toFocus = tabs.realTabs.firstIndex(of: sender) else { return }
         if toFocus == viewController?.focusedTab ?? -1 {
             textField.becomeFirstResponder()
         } else {
@@ -138,7 +138,7 @@ class CompactTabsToolbarView: NSView {
     }
 
     func closeTab(sender: TabView) {
-        guard let toClose = tabs.filter({ !$0.willBeDeleted }).firstIndex(of: sender) else { return }
+        guard let toClose = tabs.realTabs.firstIndex(of: sender) else { return }
         viewController?.closeTab(tabIndex: toClose)
     }
 

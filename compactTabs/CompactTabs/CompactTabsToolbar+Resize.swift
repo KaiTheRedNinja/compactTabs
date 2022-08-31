@@ -15,7 +15,7 @@ extension CompactTabsToolbarView {
         let mainTabIndex = viewController.focusedTab
         let currentTab: WebPageView? = (viewController.tabs.count > 0) ? viewController.tabs[mainTabIndex] : nil
         var nonMainTabWidth = minimumNonMainTabWidth
-        let numberOfRealTabs = tabs.filter({ !$0.willBeDeleted }).count // only "real" (not to be deleted) tabs count towards the width by the end of the animation
+        let numberOfRealTabs = tabs.realTabCount // only "real" (not to be deleted) tabs count towards the width by the end of the animation
 
         // the main tab must be 140 wide, so constrain the non main tabs
         let availableSpace = scrollView.frame.width-defaultMainTabWidth
