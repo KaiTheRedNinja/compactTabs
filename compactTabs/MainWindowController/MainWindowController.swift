@@ -81,12 +81,14 @@ class MainWindowController: NSWindowController, NSToolbarItemValidation {
     }
 
     @IBAction func closeTab(_ sender: Any) {
+        print("Close tab")
         if let contentViewController = contentViewController as? ViewController {
             contentViewController.closeTab()
         }
     }
 
     @IBAction func newTab(_ sender: Any) {
+        print("New tab")
         if let contentViewController = contentViewController as? ViewController {
             contentViewController.createTab()
         }

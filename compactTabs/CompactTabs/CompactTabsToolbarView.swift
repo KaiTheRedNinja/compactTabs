@@ -69,10 +69,10 @@ class CompactTabsToolbarView: NSView {
         guard let viewController = viewController else { return }
 
         // get the number of tabs there are, creating and removing tabs as needed
-        if tabs.count < viewController.tabs.count {
+        if tabs.filter({ !$0.willBeDeleted }).count < viewController.tabs.count {
             // missing tabs, just create the remaining tabs
             // Due to the way the code is implemented, tabs can only be created as the last item.
-            let originalTabCount = tabs.count
+            let originalTabCount = tabs.filter({ !$0.willBeDeleted }).count
             for (tabIndex, tab) in viewController.tabs.enumerated() {
                 if tabIndex < originalTabCount { continue }
                 let distance = tabs.last?.frame.maxX ?? 0
@@ -85,7 +85,7 @@ class CompactTabsToolbarView: NSView {
                 scrollView?.documentView?.addSubview(tabView)
                 tabView.updateWith(webPageView: tab)
             }
-        } else if tabs.count > viewController.tabs.count {
+        } else if tabs.filter({ !$0.willBeDeleted }).count > viewController.tabs.count {
             // too many tabs, delete extra tabs
             var deletedTabs = 0
             for tab in tabs {
