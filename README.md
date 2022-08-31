@@ -24,9 +24,7 @@ The compact tabs toolbar item does two things when it is setting up or refreshin
 - It creates and marks tabs for deletion so that the compact tab toolbar item's tab index is up to date with the ViewController's
 - The frames of the toolbar item are updated to their new positions and sizes, with or without animations, depending on if its triggered by a window resize or a change in the tab system.
 - If a tab was created, the scroll view is scrolled to reveal the new tab.
-- If a tab was marked as deleted, it is removed from the view and the index after its closing animation finishes
-
-The architecture of the app is built to not break when this function is called while its animations are still going on. To test this, you can spam cmd-t or cmd-w to rapidly create or remove tabs, and they should do so with relatively smooth animations.
+- If a tab was marked as deleted, it is removed from the view and the index after its closing animation finished
 
 ### Switching Tabs
 The compact tabs have a click gesture recogniser that tells the ViewController to focus that tab. The ViewController then removes the previous tab from its view, adds the new tab to the view, and sends a message to the compact tab toolbar item to refresh tabs.
