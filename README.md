@@ -40,8 +40,7 @@ Each tab has a drage gesture recogniser. When it is trigerred, the tab's frame m
 - No SF Symbols due to version requirement (instead I just added the sf images to assets)
 
 ## Potential Bugs
-- Due to how the compact tab bar works, currently toolbar customisation does not work. However, you can add/remove dummy extension items in the toolbar delegate to mimick how it would be like when the user has extensions.
-- The tab scrollview acts very oddly in fullscreen. The background somehow has a different colour, even though the background is set to clear.  
+- Due to how the compact tab bar works, currently toolbar customisation does not work. However, you can add/remove dummy extension items in the toolbar delegate to mimick how it would be like when the user has extensions.  
 
 ## Rough Order of Development
 1. Add web view

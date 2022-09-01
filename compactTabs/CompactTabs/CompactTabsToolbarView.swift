@@ -60,6 +60,7 @@ class CompactTabsToolbarView: NSView {
         scrollView?.wantsLayer = true
         scrollView?.layer?.cornerRadius = 4 // just a small attention to detail so that tabs don't look abruptly cut off
         addSubview(scrollView!)
+        scrollView?.contentView.drawsBackground = false
         scrollView?.verticalScrollElasticity = .none
     }
 

@@ -16,6 +16,7 @@ class TabView: NSView, Identifiable {
     var favicon: NSButton
     var faviconImage: NSImage
     var textView: NSTextField
+    var background: NSView = NSView()
 
     var willBeDeleted: Bool = false
     var isAnimating: Bool = false
@@ -41,6 +42,11 @@ class TabView: NSView, Identifiable {
     }
 
     func addViews(rect: NSRect) {
+        background.frame = NSRect(x: 0, y: 0, width: rect.width, height: rect.width)
+        background.wantsLayer = true
+        background.layer?.backgroundColor = NSColor(named: "tabColor")!.cgColor
+        self.addSubview(background)
+
         self.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
 
         wantsLayer = true
@@ -137,13 +143,19 @@ class TabView: NSView, Identifiable {
     var isMain = false
     func becomeMain() {
         isMain = true
-        layer?.backgroundColor = NSColor(named: "tabColor")!.cgColor
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = animationDuration/2
+            background.animator().alphaValue = 1.0
+        })
         layer?.borderColor = .clear
     }
 
     func resignMain() {
         isMain = false
-        layer?.backgroundColor = .none
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = animationDuration/2
+            background.animator().alphaValue = 0.0
+        })
         layer?.borderColor = NSColor(named: "tabOutline")!.cgColor
     }
 
@@ -181,6 +193,7 @@ class TabView: NSView, Identifiable {
     /// Resize the favicon and title
     /// - Parameter oldSize: The old size of the view
     override func resizeSubviews(withOldSize oldSize: NSSize) {
+        background.frame = NSRect(x: 0, y: 0, width: frame.width, height: frame.width)
         guard !willBeDeleted else { return } // don't update if the tab is about to be deleted
 
         let newTextViewFrame = CGRect(x: frame.height-2, y: 0,
@@ -246,7 +259,7 @@ class TabView: NSView, Identifiable {
     /// Update the tab's highlight colour on appearance change
     override func updateLayer() {
         if isMain {
-            layer?.backgroundColor = NSColor(named: "tabColor")!.cgColor
+            background.layer?.backgroundColor = NSColor(named: "tabColor")!.cgColor
         } else {
             layer?.borderColor = NSColor(named: "tabOutline")!.cgColor
         }
