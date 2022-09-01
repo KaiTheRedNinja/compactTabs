@@ -120,6 +120,7 @@ class TabView: NSView, Identifiable {
     var originalFrame: NSRect = .zero
     var clickPointOffset: CGFloat = 0.0
     @objc func didPan(_ sender: NSPanGestureRecognizer?) {
+        print("Panned")
         guard let gesture = sender else { return }
         let location = gesture.location(in: self.superview)
         if gesture.state == .began {

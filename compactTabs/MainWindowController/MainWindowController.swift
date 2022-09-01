@@ -118,7 +118,7 @@ extension MainWindowController: NSWindowDelegate {
         print("Space: \(space)")
         print("Window: \(window?.frame.width ?? 800)")
         compactTabsItem?.frame = NSRect(x: 0, y: 0, width: (window?.frame.width ?? 800) - space, height: 25)
-        print("New frame: \(compactTabsItem?.frame)")
+        print("New frame: \(compactTabsItem?.frame ?? .zero)")
 
         compactTabsItem?.updateTabs()
     }
