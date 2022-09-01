@@ -41,7 +41,7 @@ Each tab has a drage gesture recogniser. When it is trigerred, the tab's frame m
 
 ## Potential Bugs
 - Due to how the compact tab bar works, currently toolbar customisation does not work. However, you can add/remove dummy extension items in the toolbar delegate to mimick how it would be like when the user has extensions.
-- For some reason, the first few tabs can take up to about a second to open.
+- The tab scrollview acts very oddly in fullscreen. The background somehow has a different colour, even though the background is set to clear.  
 
 ## Rough Order of Development
 1. Add web view
