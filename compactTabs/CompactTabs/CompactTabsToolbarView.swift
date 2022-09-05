@@ -91,7 +91,8 @@ class CompactTabsToolbarView: NSView {
             // too many tabs, delete extra tabs
             var deletedTabs = 0
             for tab in tabs {
-                // Mark the extra tab as will be deleted. This view will be animated out and removed in the updateTabFrames function.
+                // If the tab's ascociated web view doesn't exist anymore, mark the extra tab as will be deleted.
+                // This view will be animated out and removed in the updateTabFrames function.
                 if let webPage = tab.ascociatedWebPageView, !viewController.tabs.contains(webPage) {
                     tab.willBeDeleted = true
                     deletedTabs += 1
@@ -120,8 +121,9 @@ class CompactTabsToolbarView: NSView {
         viewController?.loadPage(address: textField.stringValue)
     }
 
+    // update the text in the address bar to the address of the frontmost tab in the view controller
     func updateAddressBarText() {
-        if let viewController = viewController, viewController.tabs.count > 0 {
+        if let viewController = viewController, !viewController.tabs.isEmpty {
             textField.stringValue = viewController.tabs[viewController.focusedTab].wkView?.url?.debugDescription ?? ""
         } else {
             textField.stringValue = ""
@@ -130,9 +132,11 @@ class CompactTabsToolbarView: NSView {
 
     // MARK: View Controller Tab Actions
     func focusTab(sender: TabView) {
-        print("Focusing tab \(sender.textView.stringValue)")
+        // focus a certain tabview
         guard let toFocus = tabs.realTabs.firstIndex(of: sender) else { return }
-        if toFocus == viewController?.focusedTab ?? -1 {
+        if let focusedTab = viewController?.focusedTab, toFocus == focusedTab {
+            // if the tab to be focused is the currently focused tab, focus the URL bar
+            // this is so that one can double-click on a tab to switch to the tab and focus the URL bar
             textField.becomeFirstResponder()
         } else {
             viewController?.focusTab(tabIndex: toFocus)

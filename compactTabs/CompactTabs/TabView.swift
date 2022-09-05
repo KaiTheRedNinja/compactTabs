@@ -42,17 +42,21 @@ class TabView: NSView, Identifiable {
     }
 
     func addViews(rect: NSRect) {
+        // init the background
         background.frame = NSRect(x: 0, y: 0, width: rect.width, height: rect.width)
         background.wantsLayer = true
         background.layer?.backgroundColor = NSColor(named: "tabColor")!.cgColor
         self.addSubview(background)
-
-        self.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
-
         wantsLayer = true
         layer?.cornerRadius = 4
         layer?.borderWidth = 1
 
+        // add the gesture recognizers for focusing, zooming, and panning.
+        self.addGestureRecognizer(NSClickGestureRecognizer(target: self, action: #selector(focusTab)))
+        self.addGestureRecognizer(NSMagnificationGestureRecognizer(target: self, action: #selector(didZoom(_:))))
+        self.addGestureRecognizer(NSPanGestureRecognizer(target: self, action: #selector(didPan(_:))))
+
+        // init the favicon
         faviconImage = NSImage(named: "unknown")!
         favicon.image = faviconImage
         favicon.isBordered = false
@@ -62,6 +66,7 @@ class TabView: NSView, Identifiable {
         favicon.target = self
         favicon.action = #selector(closeTab)
 
+        // init the text view for the title
         textView.drawsBackground = false
         textView.isBezeled = false
         textView.stringValue = "IDK really"
@@ -70,18 +75,13 @@ class TabView: NSView, Identifiable {
         addSubview(textView)
         addSubview(favicon)
 
-        let zoomRecogniser = NSMagnificationGestureRecognizer(target: self, action: #selector(didZoom(_:)))
-        let panRecogniser = NSPanGestureRecognizer(target: self, action: #selector(didPan(_:)))
-        addGestureRecognizer(zoomRecogniser)
-        addGestureRecognizer(panRecogniser)
-
-        // if the tab is in expanded mode
+        // set the frame for if the tab is in expanded mode
         if rect.width > 60 {
             favicon.frame = CGRect(x: 4, y: 4, width: rect.height-8, height: rect.height-8)
             textView.frame = CGRect(x: rect.height-2, y: 0,
                                     width: rect.width-rect.height+8-4, height: rect.height-3)
             textView.alphaValue = 1
-        // if the tab is in compact mode
+        // set the frame for if the tab is in compact mode
         } else {
             favicon.frame = CGRect(x: (rect.width - (rect.height-8))/2, y: 4, width: rect.height-7, height: rect.height-8)
             textView.frame = CGRect(x: rect.height-2, y: 0,
@@ -116,11 +116,10 @@ class TabView: NSView, Identifiable {
         }
     }
 
-    var isPanning = false
-    var originalFrame: NSRect = .zero
-    var clickPointOffset: CGFloat = 0.0
+    var isPanning = false               // flag to indicate if the tab is panning
+    var originalFrame: NSRect = .zero   // the original frame pre-move
+    var clickPointOffset: CGFloat = 0.0 // the point that the user started dragging at relative the the tab's origin
     @objc func didPan(_ sender: NSPanGestureRecognizer?) {
-        print("Panned")
         guard let gesture = sender else { return }
         let location = gesture.location(in: self.superview)
         if gesture.state == .began {
@@ -144,6 +143,7 @@ class TabView: NSView, Identifiable {
     var isMain = false
     func becomeMain() {
         isMain = true
+        // animate the opacity of the background
         NSAnimationContext.runAnimationGroup({ context in
             context.duration = animationDuration/2
             background.animator().alphaValue = 1.0
@@ -153,6 +153,7 @@ class TabView: NSView, Identifiable {
 
     func resignMain() {
         isMain = false
+        // animate the opacity of the background
         NSAnimationContext.runAnimationGroup({ context in
             context.duration = animationDuration/2
             background.animator().alphaValue = 0.0
@@ -167,7 +168,11 @@ class TabView: NSView, Identifiable {
     func updateWith(webPageView: WebPageView?, attempt: Double = 0) {
         self.ascociatedWebPageView = webPageView
         let wkView = webPageView?.wkView
+
+        // set the tab title
         textView.stringValue = wkView?.title ?? (wkView?.url?.relativePath ?? "Unknown")
+
+        // if the text view is empty, it is likely that the web page has not yet loaded. Try again in a while.
         if textView.stringValue == "" {
             textView.stringValue = "Loading"
             // keep on trying to see if the web view has loaded, larger delay between each attempt
@@ -180,7 +185,7 @@ class TabView: NSView, Identifiable {
         if let url = wkView?.url, let cachedIcon = TabView.faviconCache[url] {
             faviconImage = cachedIcon
             favicon.image = faviconImage
-        } else if let wkView = wkView, let url = wkView.url {
+        } else if let wkView = wkView, let url = wkView.url { // if the favicon is not in cache, fetch it
             faviconImage = TabView.unknownFavicon
             favicon.image = faviconImage
             DispatchQueue.main.async {
@@ -306,8 +311,9 @@ class TabView: NSView, Identifiable {
 ///   - url: The URL to get the favicon for
 ///   - size: The size of the favicon in pixels. 32 by default.
 /// - Returns: An NSImage containing the favicon
-func faviconFor(url: URL?, size: Int = 32) -> NSImage {
+private func faviconFor(url: URL?, size: Int = 32) -> NSImage {
     guard let sourceURL = url else { return TabView.unknownFavicon }
+    // get the favicon from a google api, if any step fails then just return unknown.
     guard let faviconUrl = URL(string: "https://www.google.com/s2/favicons?sz=\(size)&domain=\(sourceURL.debugDescription)")
         else { return TabView.unknownFavicon }
     guard let data = try? Data(contentsOf: faviconUrl) else { return TabView.unknownFavicon }
@@ -315,6 +321,7 @@ func faviconFor(url: URL?, size: Int = 32) -> NSImage {
     return image
 }
 
+// helper extensions to filter out tabs that are about to be deleted
 extension Array where Element == TabView {
     var realTabCount: Int {
         self.filter({ !$0.willBeDeleted }).count

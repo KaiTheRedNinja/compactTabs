@@ -63,19 +63,21 @@ class ViewController: NSViewController {
     /// - Parameter tabIndex: The tab to close. If nothing was provided, then the current tab will be closed.
     func closeTab(tabIndex: Int? = nil) {
         let tabIndex = tabIndex ?? focusedTab
-        let reposition = tabIndex == focusedTab
-        if tabs.count <= 0 {
+        if tabs.isEmpty {
             // the last tab was just closed, close the window
             self.mainWindow?.close()
         } else {
             tabs.remove(at: tabIndex)
             // close the tab and focus the tab to the right
-            if reposition {
+            if tabIndex == focusedTab {
                 focusTab(tabIndex: tabIndex)
             } else {
+                // if the tab that was closed is to the left of the focused tab, the current tab will be at
+                // focusedTab-1, so refocus it.
                 focusTab(tabIndex: tabIndex < focusedTab ? focusedTab-1 : focusedTab)
             }
 
+            // if theres no tabs open anymore, focus the address bar
             if tabs.count == 0 {
                 compactTabsItem?.textField.becomeFirstResponder()
             }
@@ -88,11 +90,13 @@ class ViewController: NSViewController {
     ///   - tabIndex: The index of the tab to update
     ///   - update: If the tab bar should be updated or not
     func focusTab(tabIndex: Int, update: Bool = true) {
-        view.subviews = [view.subviews[0]]
-        if tabs.count > 0 {
+        view.subviews = [view.subviews[0]] // unfocus the current tab
+        if !tabs.isEmpty { // only focus a tab if there are existing tabs
+            // if tabIndex is less than 0, focus the first tab.
+            // if it is more than the number of tabs, focus the last tab.
             let toFocus = tabIndex >= 0 ? (tabIndex < tabs.count ? tabIndex : tabs.count-1) : 0
             tabs[toFocus].frame = view.frame
-            view.addSubview(tabs[toFocus])
+            view.addSubview(tabs[toFocus]) // add the new tab to the view
             focusedTab = toFocus
         }
         if update {
@@ -122,7 +126,7 @@ class ViewController: NSViewController {
     /// Note that currently a protocol is required for the regex to identify it as a proper URL.
     /// - Parameter address: The search query or URL.
     func loadPage(address: String) {
-        guard !address.isEmpty else { return }
+        guard !address.isEmpty else { return } // the address must not be empty
         // NOTE: If you dont include the protocol, the url will be searched instead.
         if let url = URL(string: address), url.debugDescription.range(of: "^.+://",
                                                          options: .regularExpression,
@@ -140,11 +144,12 @@ class ViewController: NSViewController {
     ///   - url: The URL to load
     ///   - webView: The web view to load, or the frontmost if left blank.
     private func loadWebPage(url: URL, webView: WebPageView? = nil) {
-        if tabs.count <= 0 {
+        if tabs.isEmpty { // if there are no tabs, create a new tab with the url
             createTab(url: url)
-        } else if let webPageView = webView {
+        } else if let webPageView = webView { // if a web view was provided, load it there.
             webPageView.loadPage(address: url.debugDescription)
         } else if let webPageView = view.subviews.first(where: { $0 is WebPageView }) as? WebPageView {
+            // else, load it in the frontmost tab
             webPageView.loadPage(address: url.debugDescription)
         }
     }
