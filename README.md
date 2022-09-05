@@ -1,6 +1,37 @@
 # Orion Compact Tabs
 My Technical Task for Orion. Supports macOS 10.14 and above, developed on macOS 12.5. Built to be a mimick of Safari's Compact Tabs, using Orion's concept at https://orionfeedback.org/d/92-compact-tabs/82.
 
+## Demonstration
+Creating and deleting tabs
+
+
+https://user-images.githubusercontent.com/88234730/187844890-02d79824-0a35-4ca1-9f5a-7d41f0fabb4e.mov
+
+
+Navigating
+
+
+https://user-images.githubusercontent.com/88234730/187844924-ff524495-3a3b-4ec9-af6f-74f5a9c9129c.mov
+
+
+No tabs open + Switching tabs
+
+
+https://user-images.githubusercontent.com/88234730/187844938-04adf40e-046f-4eef-b4ec-61f66b037f67.mov
+
+
+Tab scrolling and expanding using pinch outwards on trackpad
+
+
+https://user-images.githubusercontent.com/88234730/187844949-c1344461-63a0-4470-9c65-030891902b68.mov
+
+
+Tab reoredring
+
+
+https://user-images.githubusercontent.com/88234730/187844957-ebf46b99-10ce-4d5a-a92a-dfc9b28d3ee1.mov
+
+
 ## Unique Additions
 1. **Zoom out to expand tab temporarily**. A large pain of compact tabs is that it gets harder to identify tabs, especially when they have similar favicons and are in their compact favicon-only mode. My solution was to allow the user to expand the width of a tab temporarily (eg. to see the tab title) by means of a zoom gesture, which is an intuitive way to reveal the tab's title.
 2. **Double click on tab or click on currently active tab to focus address field**. Reading through the Orion Feedback thread, I saw a few comments saying how clicking on a tab and then clicking the address bar is a bit troublesome in Orion's concept (click on tab -> move cursor -> click on address bar), wheras its a lot simpler in Safari's (click on tab -> click on tab again to focus in-tab address bar). I made it so that clicking on the active tab focuses the address bar, so that one can simply double click on a tab to switch to it and focus the URL bar. 
@@ -66,6 +97,3 @@ Each tab has a drage gesture recogniser. When it is trigerred, the tab's frame m
 21. Fix crashes related to doing certain actions when animations are playing
 22. Added the ability to use a zoom out trackpad gesture to expand the width of a tab temporarily
 23. Added the ability to reorder tabs
-
-## Todo:
-- Re-enable Toolbar Customisation
